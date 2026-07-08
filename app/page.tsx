@@ -14,6 +14,7 @@ import { useRef } from "react";
 import Header from "../components/marketing/Header";
 import Hero from "../components/marketing/Hero";
 import ValueProps from "../components/marketing/ValueProps";
+import Pricing from "../components/marketing/Pricing";
 import InteractiveDemo from "../components/marketing/InteractiveDemo";
 import Footer from "../components/marketing/Footer";
 
@@ -29,6 +30,7 @@ export default function HomePage() {
       <Header />
       <Hero onGetStarted={scrollToDemo} />
       <ValueProps />
+      <Pricing />
       <InteractiveDemo ref={demoRef} />
       <Footer />
     </main>
