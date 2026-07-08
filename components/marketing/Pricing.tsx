@@ -55,10 +55,10 @@ export default function Pricing() {
           className="text-xs uppercase tracking-wide block mb-2"
           style={{ fontFamily: FONT_FAMILY.mono, color: COLORS.inkMuted }}
         >
-          Pricing
+          Founding member pricing
         </span>
         <h2 style={{ fontFamily: FONT_FAMILY.display, fontSize: "24px", fontWeight: 600, color: COLORS.ink }}>
-          Start free. Upgrade when you need more.
+          Start free. Lock in this rate for as long as you stay.
         </h2>
       </div>
 

@@ -14,6 +14,7 @@ import { useRef } from "react";
 import Header from "../components/marketing/Header";
 import Hero from "../components/marketing/Hero";
 import ValueProps from "../components/marketing/ValueProps";
+import FoundingOffer from "../components/marketing/FoundingOffer";
 import Pricing from "../components/marketing/Pricing";
 import InteractiveDemo from "../components/marketing/InteractiveDemo";
 import Footer from "../components/marketing/Footer";
@@ -25,11 +26,16 @@ export default function HomePage() {
     demoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  const scrollToPricing = () => {
+    document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <main style={{ backgroundColor: "#F2F1EC", minHeight: "100vh" }} className="flex flex-col items-center">
       <Header />
       <Hero onGetStarted={scrollToDemo} />
       <ValueProps />
+      <FoundingOffer onSeePricing={scrollToPricing} />
       <Pricing />
       <InteractiveDemo ref={demoRef} />
       <Footer />
