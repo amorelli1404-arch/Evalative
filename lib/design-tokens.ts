@@ -1,40 +1,3 @@
-/**
- * lib/design-tokens.ts
- *
- * The design token system for the product, referenced by every component
- * in this directory. Intentional departure from typical PropTech visual
- * language (Zillow blue, Redfin red, glossy listing-photo hero treatments):
- * this product's entire pitch is "an independent instrument reading, not
- * a sales pitch," so the visual language borrows from lab reports and
- * appraisal documents -- muted paper background, monospace figures for
- * every number (the signature element), thin hairline dividers instead of
- * card shadows, and a restrained three-color verdict system rather than
- * loud alert-banner colors.
- *
- * COLOR PALETTE
- *   paper       #F2F1EC  -- background, warm-neutral, not the common cream/terracotta default
- *   ink         #1C1F1D  -- primary text, near-black with a warm undertone
- *   ink-muted   #5B5F5A  -- secondary text
- *   hairline    #D8D5CC  -- dividers, borders (never shadows for elevation)
- *   moss        #3F6652  -- favorable verdict (muted forest, not neon green)
- *   ochre       #A87B2E  -- caution/wait verdict (muted amber, not bright yellow)
- *   clay        #9C4A3C  -- unfavorable verdict (muted brick red, not alarm red)
- *   slate       #55606B  -- informational/neutral accent, insufficient-data state
- *
- * TYPE SYSTEM
- *   Display/headline : "Source Serif 4"  -- used sparingly, moderate contrast, not a loud hero serif
- *   Body             : "Inter"            -- clean grotesk for all UI copy
- *   Data/figures     : "IBM Plex Mono"    -- EVERY dollar figure, percentage, and confidence
- *                                            score renders in this face with tabular numerals.
- *                                            This is the signature typographic move: numbers
- *                                            are visually marked as measured data, distinct
- *                                            from surrounding prose.
- *
- * Register the font families in app/layout.tsx via next/font, and add the
- * palette below to tailwind.config.ts under theme.extend.colors so classes
- * like `bg-paper`, `text-moss`, `border-hairline` are available directly.
- */
-
 export const COLORS = {
   paper: "#F2F1EC",
   ink: "#1C1F1D",
@@ -56,13 +19,6 @@ export const FONT_FAMILY = {
   mono: "var(--font-plex-mono)",
 } as const;
 
-/**
- * Every verdict maps to exactly one of three sentiment buckets, which is
- * deliberate: more than three visual states in a glanceable card system
- * defeats the purpose of "short, simple, actionable." insufficient_data is
- * a fourth, explicitly NEUTRAL bucket -- it must never be styled as
- * favorable or unfavorable, since no verdict was actually reached.
- */
 export type VerdictSentiment = "favorable" | "caution" | "unfavorable" | "neutral";
 
 import type { Verdict } from "./types";
@@ -81,18 +37,13 @@ export const VERDICT_SENTIMENT: Record<Verdict, VerdictSentiment> = {
   insufficient_data: "neutral",
 };
 
-export const SENTIMENT_STYLE: Record<
-  VerdictSentiment,
-  { fg: string; bg: string; label: string; symbol: string }
-> = {
+export const SENTIMENT_STYLE: Record<VerdictSentiment, { fg: string; bg: string; label: string; symbol: string }> = {
   favorable: { fg: COLORS.moss, bg: COLORS.mossSoft, label: "Favorable", symbol: "●" },
   caution: { fg: COLORS.ochre, bg: COLORS.ochreSoft, label: "Worth watching", symbol: "◐" },
   unfavorable: { fg: COLORS.clay, bg: COLORS.claySoft, label: "Not favorable", symbol: "○" },
   neutral: { fg: COLORS.slate, bg: COLORS.slateSoft, label: "Insufficient data", symbol: "–" },
 };
 
-/** Human-readable labels for verdict values, used as a fallback / accessible
- * label alongside the AI-generated verdict_line text. */
 export const VERDICT_LABEL: Record<Verdict, string> = {
   renovate_now: "Renovate now",
   wait: "Wait and monitor",
@@ -107,11 +58,6 @@ export const VERDICT_LABEL: Record<Verdict, string> = {
   insufficient_data: "Not enough data yet",
 };
 
-/** Maps machine-readable key_driver codes (from roi_engine.py) to short,
- * plain-language labels for use in Layer 2/3 detail views. The AI-formatted
- * card handles translating this into full sentences (reason_text); this
- * mapping is for contexts that render the raw EvaluationOutput directly,
- * such as the fallback template card or the Layer 3 methodology panel. */
 export const KEY_DRIVER_LABEL: Record<string, string> = {
   local_market_outpacing_national_recoup: "Your local market is appreciating faster than average",
   strong_national_recoup_category: "This project type recoups well on average nationally",

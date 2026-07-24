@@ -1,20 +1,5 @@
 import type { EvaluationOutput, FormattedCard, ComparableSale } from "./types";
 
-/**
- * lib/mockEvaluation.ts
- *
- * Produces EvaluationOutput/FormattedCard objects that are structurally
- * identical to what routes/evaluations.py returns, using the same formula
- * shape as core/roi_engine.py's renovation_roi calculation. This exists so
- * the deployed site has a genuinely working, clickable demo on day one --
- * using the REAL VerdictCard/DeepDiveBreakdown/RawConfigPanel/
- * PropertyDashboard components, not a separate duplicate UI -- while the
- * FastAPI backend and auth are still being deployed separately.
- *
- * Replace calls to this module with lib/api.ts's runEvaluation() once
- * NEXT_PUBLIC_API_BASE_URL points at a live backend and auth is wired in.
- */
-
 const NATIONAL_BASELINE_COST: Record<string, number> = {
   minor_kitchen_remodel: 28000,
   major_kitchen_remodel: 82000,
@@ -45,8 +30,7 @@ export function computeMockEvaluation(
   if (roiPercent >= 100) {
     verdict = "renovate_now";
     verdictLine = "🟢 Worth it right now";
-    reasonText =
-      "Your local market is appreciating faster than the national average, which is boosting returns on this kind of project above what's typical elsewhere.";
+    reasonText = "Your local market is appreciating faster than the national average, which is boosting returns on this kind of project above what's typical elsewhere.";
   } else if (roiPercent >= 70) {
     verdict = "wait";
     verdictLine = "🟡 Worth monitoring";
@@ -75,10 +59,7 @@ export function computeMockEvaluation(
     verdict_line: verdictLine,
     number_line: `Est. $${valueAdded.toLocaleString()} value added vs. $${cost.toLocaleString()} cost (${roiPercent}% return)`,
     reason_text: reasonText,
-    next_step:
-      roiPercent >= 100
-        ? "Get 2-3 contractor quotes now to lock in current pricing."
-        : "Revisit this evaluation after finishing higher-return projects first.",
+    next_step: roiPercent >= 100 ? "Get 2-3 contractor quotes now to lock in current pricing." : "Revisit this evaluation after finishing higher-return projects first.",
     source_evaluation_calculation_version: "demo-1.0.0",
     ai_model_version: "demo_mock::no_llm",
     numeric_validation_passed: true,

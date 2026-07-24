@@ -23,10 +23,7 @@ export default function ValueProps() {
       <div className="grid sm:grid-cols-3 gap-8">
         {ITEMS.map((item) => (
           <div key={item.title}>
-            <h3
-              className="text-base mb-2"
-              style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: COLORS.ink }}
-            >
+            <h3 className="text-base mb-2" style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: COLORS.ink }}>
               {item.title}
             </h3>
             <p className="text-sm leading-relaxed" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>

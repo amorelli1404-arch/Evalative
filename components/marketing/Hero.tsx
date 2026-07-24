@@ -1,12 +1,16 @@
 "use client";
 
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
+import PhotoCarousel, { type CarouselSlide } from "./PhotoCarousel";
 
-// Photo credit: Michael Brown (@vettexan) on Unsplash, free to use under
-// the Unsplash License (unsplash.com/license) -- free for commercial use,
-// no permission or attribution required, credited here as good practice.
-const HERO_IMAGE_URL =
-  "https://images.unsplash.com/photo-1757359056339-22968344cce6?auto=format&fit=crop&w=1800&q=80";
+const SLIDES: CarouselSlide[] = [
+  // Photo credit: Michael Brown (@vettexan) on Unsplash
+  { url: "https://images.unsplash.com/photo-1757359056339-22968344cce6?auto=format&fit=crop&w=1800&q=80", alt: "A modern home at dusk" },
+  // Photo credit: John Fornander (@johnfo) on Unsplash
+  { url: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1800&q=80", alt: "A modern home with a swimming pool" },
+  // Photo credit: Bailey Anselme (@pbanselme) on Unsplash
+  { url: "https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=1800&q=80", alt: "A family home at golden hour" },
+];
 
 function SignatureGauge() {
   const heights = [10, 16, 22, 28, 34, 40, 46];
@@ -29,23 +33,8 @@ function SignatureGauge() {
 
 export default function Hero({ onGetStarted }: { onGetStarted: () => void }) {
   return (
-    <section className="relative w-full flex items-center justify-center overflow-hidden" style={{ minHeight: "640px" }}>
-      <img
-        src={HERO_IMAGE_URL}
-        alt="A modern home at dusk"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-      {/* Dark gradient overlay for text legibility -- deliberately a
-          simple linear gradient, not a full opaque scrim, so the photo
-          still reads clearly at the edges. */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: "linear-gradient(180deg, rgba(20,22,20,0.55) 0%, rgba(20,22,20,0.75) 100%)",
-        }}
-      />
-
-      <div className="relative z-10 max-w-2xl mx-auto px-6 py-24 flex flex-col items-center text-center">
+    <PhotoCarousel slides={SLIDES} minHeight="640px" overlayStrength="medium">
+      <div className="max-w-2xl mx-auto px-6 py-24 flex flex-col items-center text-center">
         <SignatureGauge />
         <h1
           className="mt-8 text-4xl sm:text-5xl leading-tight"
@@ -68,6 +57,6 @@ export default function Hero({ onGetStarted }: { onGetStarted: () => void }) {
           No account needed to try it
         </span>
       </div>
-    </section>
+    </PhotoCarousel>
   );
 }

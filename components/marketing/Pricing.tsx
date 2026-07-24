@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
+import { startCheckout } from "../../app/checkout-actions";
 
 interface Tier {
   name: string;
+  backendTier: "starter" | "homeowner_pro" | null;
   price: string;
   cadence: string;
   description: string;
@@ -14,6 +17,7 @@ interface Tier {
 const TIERS: Tier[] = [
   {
     name: "Free",
+    backendTier: null,
     price: "$0",
     cadence: "forever",
     description: "Try it out with no commitment.",
@@ -21,6 +25,7 @@ const TIERS: Tier[] = [
   },
   {
     name: "Pro",
+    backendTier: "starter",
     price: "$9.99",
     cadence: "/ month",
     description: "For an active decision you're tracking.",
@@ -34,6 +39,7 @@ const TIERS: Tier[] = [
   },
   {
     name: "Max",
+    backendTier: "homeowner_pro",
     price: "$19.99",
     cadence: "/ month",
     description: "Everything, plus room to grow.",
@@ -41,13 +47,34 @@ const TIERS: Tier[] = [
       "Everything in Pro",
       "Up to 5 properties",
       "Portfolio-level view",
+      "Nearby Match — similar properties near you",
       "Quarterly deep-dive report",
       "Early access to new features",
     ],
   },
 ];
 
-export default function Pricing() {
+export default function Pricing({ onFreeSelect }: { onFreeSelect?: () => void }) {
+  const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSelect = async (tier: Tier) => {
+    if (tier.backendTier === null) {
+      onFreeSelect?.();
+      return;
+    }
+
+    setError(null);
+    setLoadingTier(tier.name);
+    try {
+      const { checkoutUrl } = await startCheckout(tier.backendTier, "month");
+      window.location.href = checkoutUrl;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong starting checkout. Please try again.");
+      setLoadingTier(null);
+    }
+  };
+
   return (
     <section id="pricing" className="w-full max-w-4xl mx-auto px-6 py-14 border-t" style={{ borderColor: COLORS.hairline }}>
       <div className="text-center mb-10">
@@ -61,6 +88,12 @@ export default function Pricing() {
           Start free. Lock in this rate for as long as you stay.
         </h2>
       </div>
+
+      {error && (
+        <div className="max-w-md mx-auto mb-6 p-3 rounded-sm border border-red-300 bg-red-50 text-red-800 text-sm text-center">
+          {error}
+        </div>
+      )}
 
       <div className="grid sm:grid-cols-3 gap-6">
         {TIERS.map((tier) => (
@@ -85,9 +118,7 @@ export default function Pricing() {
             </h3>
             <div className="flex items-baseline gap-1 mt-2 mb-1">
               <span style={{ fontFamily: FONT_FAMILY.mono, fontSize: "28px", color: COLORS.ink }}>{tier.price}</span>
-              <span style={{ fontFamily: FONT_FAMILY.mono, fontSize: "13px", color: COLORS.inkMuted }}>
-                {tier.cadence}
-              </span>
+              <span style={{ fontFamily: FONT_FAMILY.mono, fontSize: "13px", color: COLORS.inkMuted }}>{tier.cadence}</span>
             </div>
             <p className="text-sm mb-4" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
               {tier.description}
@@ -101,15 +132,18 @@ export default function Pricing() {
               ))}
             </ul>
             <button
+              onClick={() => handleSelect(tier)}
+              disabled={loadingTier === tier.name}
               className="w-full py-2 rounded-sm text-sm font-medium"
               style={{
                 backgroundColor: tier.highlighted ? COLORS.ink : "white",
                 color: tier.highlighted ? COLORS.paper : COLORS.ink,
                 border: tier.highlighted ? "none" : `1px solid ${COLORS.hairline}`,
                 fontFamily: FONT_FAMILY.body,
+                opacity: loadingTier === tier.name ? 0.6 : 1,
               }}
             >
-              {tier.name === "Free" ? "Get started" : `Choose ${tier.name}`}
+              {loadingTier === tier.name ? "Redirecting to checkout..." : tier.name === "Free" ? "Get started" : `Choose ${tier.name}`}
             </button>
           </div>
         ))}

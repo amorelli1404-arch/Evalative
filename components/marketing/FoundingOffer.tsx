@@ -1,19 +1,19 @@
 "use client";
 
 import { FONT_FAMILY } from "../../lib/design-tokens";
+import PhotoCarousel, { type CarouselSlide } from "./PhotoCarousel";
 
-// Photo credit: Jakub Żerdzicki on Unsplash, free to use under the
-// Unsplash License -- free for commercial use, no permission required.
-const KEY_IMAGE_URL =
-  "https://images.unsplash.com/photo-1733244766159-f58f4184fd38?auto=format&fit=crop&w=1800&q=80";
+const SLIDES: CarouselSlide[] = [
+  // Photo credit: Jakub Żerdzicki on Unsplash
+  { url: "https://images.unsplash.com/photo-1733244766159-f58f4184fd38?auto=format&fit=crop&w=1800&q=80", alt: "Handing over the keys to a new home" },
+  // Photo credit: John Fornander (@johnfo) on Unsplash
+  { url: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1800&q=80", alt: "A modern home with a swimming pool" },
+];
 
 export default function FoundingOffer({ onSeePricing }: { onSeePricing: () => void }) {
   return (
-    <section className="relative w-full overflow-hidden" style={{ minHeight: "380px" }}>
-      <img src={KEY_IMAGE_URL} alt="Handing over the keys to a new home" className="absolute inset-0 w-full h-full object-cover" />
-      <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(20,22,20,0.68) 0%, rgba(20,22,20,0.8) 100%)" }} />
-
-      <div className="relative z-10 max-w-xl mx-auto px-6 py-16 flex flex-col items-center text-center">
+    <PhotoCarousel slides={SLIDES} minHeight="380px" overlayStrength="dark" slideDurationMs={7000}>
+      <div className="max-w-xl mx-auto px-6 py-16 flex flex-col items-center text-center">
         <span
           className="text-xs uppercase tracking-wide px-3 py-1 rounded-sm mb-4"
           style={{ backgroundColor: "rgba(245,244,239,0.15)", color: "#F5F4EF", fontFamily: FONT_FAMILY.mono }}
@@ -39,6 +39,6 @@ export default function FoundingOffer({ onSeePricing }: { onSeePricing: () => vo
           See founding member pricing
         </button>
       </div>
-    </section>
+    </PhotoCarousel>
   );
 }

@@ -2,24 +2,23 @@
 
 import Header from "../../components/marketing/Header";
 import Footer from "../../components/marketing/Footer";
+import PhotoCarousel, { type CarouselSlide } from "../../components/marketing/PhotoCarousel";
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
 
-// Photo credit: Bailey Anselme (@pbanselme) on Unsplash, free to use
-// under the Unsplash License -- free for commercial use, no permission
-// or attribution required, credited here as good practice.
-const ABOUT_IMAGE_URL =
-  "https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=1800&q=80";
+const SLIDES: CarouselSlide[] = [
+  // Photo credit: Bailey Anselme (@pbanselme) on Unsplash
+  { url: "https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=1800&q=80", alt: "A family home at golden hour" },
+  // Photo credit: SnapSaga (@catauggie) on Unsplash
+  { url: "https://images.unsplash.com/photo-1714199523604-f4f01ae8e0ec?auto=format&fit=crop&w=1800&q=80", alt: "A tree-lined residential street" },
+];
 
 export default function AboutPage() {
   return (
     <main style={{ backgroundColor: COLORS.paper, minHeight: "100vh" }} className="flex flex-col items-center">
       <Header />
 
-      {/* Full-bleed photo hero for the About page */}
-      <section className="relative w-full overflow-hidden" style={{ minHeight: "420px" }}>
-        <img src={ABOUT_IMAGE_URL} alt="A family home at golden hour" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(20,22,20,0.5) 0%, rgba(20,22,20,0.75) 100%)" }} />
-        <div className="relative z-10 max-w-2xl mx-auto px-6 py-24 flex flex-col items-center text-center">
+      <PhotoCarousel slides={SLIDES} minHeight="420px" overlayStrength="medium">
+        <div className="max-w-2xl mx-auto px-6 py-24 flex flex-col items-center text-center">
           <span className="text-xs uppercase tracking-wide mb-3" style={{ fontFamily: FONT_FAMILY.mono, color: "#E4E2D8" }}>
             About Evalative
           </span>
@@ -27,7 +26,7 @@ export default function AboutPage() {
             We built the second opinion your property decisions were missing
           </h1>
         </div>
-      </section>
+      </PhotoCarousel>
 
       <section className="w-full max-w-3xl px-6 py-16">
         <div className="flex flex-col gap-6" style={{ fontFamily: FONT_FAMILY.body, fontSize: "17px", lineHeight: 1.8, color: COLORS.ink }}>
@@ -51,10 +50,7 @@ export default function AboutPage() {
             month stale.
           </p>
 
-          <div
-            className="mt-4 p-6 rounded-sm"
-            style={{ backgroundColor: "white", border: `1px solid ${COLORS.hairline}` }}
-          >
+          <div className="mt-4 p-6 rounded-sm" style={{ backgroundColor: "white", border: `1px solid ${COLORS.hairline}` }}>
             <h2 className="text-xl mb-3" style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: COLORS.ink }}>
               Why we're opening this up now
             </h2>

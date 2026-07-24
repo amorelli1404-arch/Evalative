@@ -13,24 +13,13 @@ export default function Header() {
         Evalative
       </Link>
       <nav className="flex items-center gap-6">
-        <Link
-          href="/#pricing"
-          className="text-sm hidden sm:block"
-          style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}
-        >
+        <Link href="/pricing" className="text-sm hidden sm:block" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
           Pricing
         </Link>
-        <Link
-          href="/about"
-          className="text-sm hidden sm:block"
-          style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}
-        >
+        <Link href="/about" className="text-sm hidden sm:block" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
           About
         </Link>
-        <span
-          className="text-xs uppercase tracking-wide hidden md:block"
-          style={{ fontFamily: FONT_FAMILY.mono, color: COLORS.inkMuted }}
-        >
+        <span className="text-xs uppercase tracking-wide hidden md:block" style={{ fontFamily: FONT_FAMILY.mono, color: COLORS.inkMuted }}>
           Independent property evaluations
         </span>
       </nav>

@@ -2,29 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
- * app/globals.css
- *
- * Base styles. Palette values here are duplicated from lib/design-tokens.ts
- * ONLY for the two properties (html background, default text color) that
- * need to be set before Tailwind's generated utility classes are available
- * -- every other color usage in the app should go through the COLORS
- * object or the Tailwind classes generated from tailwind.config.ts, not
- * hardcoded hex values, to keep a single source of truth.
- */
-
 html,
 body {
-  background-color: #F2F1EC; /* COLORS.paper -- see note above on duplication */
-  color: #1C1F1D; /* COLORS.ink */
+  background-color: #F2F1EC;
+  color: #1C1F1D;
 }
 
 * {
   box-sizing: border-box;
 }
 
-/* Respect reduced-motion preferences across the app -- required per the
-   frontend-design skill's quality floor, not optional polish. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -36,23 +23,9 @@ body {
   }
 }
 
-/* Visible keyboard focus states -- required per the frontend-design skill's
-   quality floor. Tailwind's default focus ring is suppressed by some of
-   the inline-styled buttons in components/, so this restores a consistent,
-   visible focus outline across all interactive elements regardless of how
-   they're styled. */
 button:focus-visible,
 input:focus-visible,
 a:focus-visible {
-  outline: 2px solid #1C1F1D; /* COLORS.ink */
+  outline: 2px solid #1C1F1D;
   outline-offset: 2px;
-}
-
-/* Tabular numerals by default wherever the mono font is applied, so
-   multi-line dollar figures and percentages align vertically -- this is
-   what makes the "instrument readout" visual language actually read as
-   precise rather than just stylistically monospace. */
-.font-mono,
-[style*="--font-plex-mono"] {
-  font-variant-numeric: tabular-nums;
 }
