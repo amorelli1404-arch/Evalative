@@ -36,6 +36,7 @@ export default function Footer() {
         ))}
 
         <div>
+          <img src="/logo.png" alt="Evalative" className="h-12 w-auto mb-4 rounded-sm" />
           <h4 className="text-xs uppercase tracking-wide mb-4" style={{ fontFamily: FONT_FAMILY.body, color: "#D4AF37", letterSpacing: "0.1em" }}>
             Newsletter
           </h4>
