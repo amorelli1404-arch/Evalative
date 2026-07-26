@@ -20,8 +20,8 @@ const config: Config = {
         "slate-soft": COLORS.slateSoft,
       },
       fontFamily: {
-        display: ["var(--font-source-serif)"],
-        body: ["var(--font-inter)"],
+        display: ["var(--font-playfair)"],
+        body: ["var(--font-montserrat)"],
         mono: ["var(--font-plex-mono)"],
       },
       borderRadius: {

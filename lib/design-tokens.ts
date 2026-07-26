@@ -1,8 +1,13 @@
 export const COLORS = {
-  paper: "#F2F1EC",
-  ink: "#1C1F1D",
-  inkMuted: "#5B5F5A",
-  hairline: "#D8D5CC",
+  paper: "#FFFFFF",
+  ink: "#1A1A1A",
+  inkMuted: "#5C5C5C",
+  hairline: "#E5E2DA",
+  gold: "#D4AF37",
+  goldSoft: "#F7F0DD",
+  // Retained for verdict-sentiment coloring (favorable/caution/unfavorable) --
+  // the luxury redesign's neutral gold accent is for brand/CTA moments,
+  // not verdict semantics, so these three stay distinct from `gold`.
   moss: "#3F6652",
   mossSoft: "#E4EBE6",
   ochre: "#A87B2E",
@@ -14,8 +19,8 @@ export const COLORS = {
 } as const;
 
 export const FONT_FAMILY = {
-  display: "var(--font-source-serif)",
-  body: "var(--font-inter)",
+  display: "var(--font-playfair)",
+  body: "var(--font-montserrat)",
   mono: "var(--font-plex-mono)",
 } as const;
 

@@ -4,8 +4,8 @@
 
 html,
 body {
-  background-color: #F2F1EC;
-  color: #1C1F1D;
+  background-color: #FFFFFF;
+  color: #1A1A1A;
 }
 
 * {
@@ -26,6 +26,6 @@ body {
 button:focus-visible,
 input:focus-visible,
 a:focus-visible {
-  outline: 2px solid #1C1F1D;
+  outline: 2px solid #1A1A1A;
   outline-offset: 2px;
 }
