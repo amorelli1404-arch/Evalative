@@ -203,3 +203,162 @@ export interface MarketVelocity {
   inventoryLevel: InventoryLevel;
   priceCutsPercent: number;
 }
+
+// ---------------------------------------------------------------------------
+// Max Feature: Dynamic Renovation ROI & Real-Time Material/Labor Cost Engine
+// ---------------------------------------------------------------------------
+
+export interface MaterialLaborBreakdown {
+  type: ProjectType;
+  label: string;
+  materialCostPercent: number; // % of total cost that's materials vs labor
+  materialCostIndexTrend: number; // signed % change over last 90 days
+  laborCostIndexTrend: number; // signed % change over last 90 days
+  adjustedRecoupRate: number; // recoup rate after applying current cost trends
+  adjustedValueAdded: number;
+  costEstimate: number;
+}
+
+/**
+ * Applies a live-style cost index adjustment on top of the base recoup
+ * rate: rising material/labor costs erode recoup rate (same renovation,
+ * more expensive to build, same resale bump), falling costs improve it.
+ * The 90-day trend inputs are illustrative -- see the component-level
+ * comment for how this would connect to a real cost-index feed.
+ */
+export function calculateDynamicRenovationROI(
+  type: ProjectType,
+  materialTrendPercent: number,
+  laborTrendPercent: number,
+  materialCostPercent: number = 55
+): MaterialLaborBreakdown {
+  const base = NATIONAL_ROI_BY_PROJECT[type];
+  const blendedTrend = (materialTrendPercent * (materialCostPercent / 100)) + (laborTrendPercent * (1 - materialCostPercent / 100));
+  // Every 1% rise in blended costs erodes recoup rate by 0.6 percentage
+  // points (rebuilding the same project costs more without the resale
+  // value moving proportionally) -- a deliberately conservative, clearly
+  // stated sensitivity rather than a hidden black-box multiplier.
+  const adjustedRecoupRate = Math.max(0.2, base.recoupRate - (blendedTrend * 0.006));
+  const costEstimate = Math.round(base.baselineCost * (1 + blendedTrend / 100));
+  const adjustedValueAdded = Math.round(costEstimate * adjustedRecoupRate);
+
+  return {
+    type,
+    label: base.label,
+    materialCostPercent,
+    materialCostIndexTrend: materialTrendPercent,
+    laborCostIndexTrend: laborTrendPercent,
+    adjustedRecoupRate: Math.round(adjustedRecoupRate * 100) / 100,
+    adjustedValueAdded,
+    costEstimate,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Max Feature: Automated Capital Decision & Confidence-Scoring Engine
+// ---------------------------------------------------------------------------
+
+export interface CapitalDecisionInputs {
+  homeValue: number;
+  monthlyRent: number;
+  monthlyOwnCost: number; // mortgage + tax + insurance + maintenance
+  annualAppreciationPercent: number;
+  holdingYears: number;
+  sellingCostPercent: number; // agent commission + closing at eventual sale
+}
+
+export interface CapitalDecisionOutput {
+  scenario: "rent_vs_buy" | "sell_vs_rent";
+  recommendedAction: string;
+  confidenceScore: number;
+  netAdvantage: number; // positive = recommended action is better by this $ amount
+  reasoning: string;
+}
+
+export function calculateRentVsBuy(inputs: CapitalDecisionInputs): CapitalDecisionOutput {
+  const totalRentCost = inputs.monthlyRent * 12 * inputs.holdingYears;
+  const appreciationFactor = Math.pow(1 + inputs.annualAppreciationPercent / 100, inputs.holdingYears);
+  const futureValue = inputs.homeValue * appreciationFactor;
+  const equityGained = futureValue - inputs.homeValue;
+  const sellingCosts = futureValue * (inputs.sellingCostPercent / 100);
+  const totalBuyCost = inputs.monthlyOwnCost * 12 * inputs.holdingYears - equityGained + sellingCosts;
+
+  const netAdvantage = Math.round(totalRentCost - totalBuyCost);
+  const recommendedAction = netAdvantage > 0 ? "Buy" : "Continue renting";
+  const magnitude = Math.abs(netAdvantage) / Math.max(totalRentCost, totalBuyCost);
+  const confidenceScore = Math.min(95, Math.round(60 + magnitude * 100));
+
+  return {
+    scenario: "rent_vs_buy",
+    recommendedAction,
+    confidenceScore,
+    netAdvantage: Math.abs(netAdvantage),
+    reasoning: netAdvantage > 0
+      ? `Buying saves an estimated $${Math.abs(netAdvantage).toLocaleString()} over ${inputs.holdingYears} years after accounting for appreciation and eventual selling costs.`
+      : `Renting saves an estimated $${Math.abs(netAdvantage).toLocaleString()} over ${inputs.holdingYears} years at these assumptions.`,
+  };
+}
+
+export function calculateSellVsRent(inputs: CapitalDecisionInputs): CapitalDecisionOutput {
+  const netSaleProceeds = inputs.homeValue * (1 - inputs.sellingCostPercent / 100);
+  const reinvestmentReturn = 5.0; // assumed alternative investment return, consistent with backend roi_engine.py's ALTERNATIVE_INVESTMENT_ANNUAL_RETURN_PCT
+  const sellPathValue = netSaleProceeds * Math.pow(1 + reinvestmentReturn / 100, inputs.holdingYears);
+
+  const annualNetRental = (inputs.monthlyRent - inputs.monthlyOwnCost) * 12;
+  const appreciationFactor = Math.pow(1 + inputs.annualAppreciationPercent / 100, inputs.holdingYears);
+  const rentPathValue = annualNetRental * inputs.holdingYears + inputs.homeValue * appreciationFactor;
+
+  const netAdvantage = Math.round(rentPathValue - sellPathValue);
+  const recommendedAction = netAdvantage > 0 ? "Rent it out" : "Sell now";
+  const magnitude = Math.abs(netAdvantage) / Math.max(sellPathValue, rentPathValue);
+  const confidenceScore = Math.min(95, Math.round(60 + magnitude * 100));
+
+  return {
+    scenario: "sell_vs_rent",
+    recommendedAction,
+    confidenceScore,
+    netAdvantage: Math.abs(netAdvantage),
+    reasoning: netAdvantage > 0
+      ? `Renting it out is projected to net $${Math.abs(netAdvantage).toLocaleString()} more than selling and reinvesting the proceeds over ${inputs.holdingYears} years.`
+      : `Selling and reinvesting the proceeds is projected to net $${Math.abs(netAdvantage).toLocaleString()} more than renting it out over ${inputs.holdingYears} years.`,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Max Feature: Hyper-Local Micro-Market Sensitivity & Rate Tracking
+// ---------------------------------------------------------------------------
+
+export interface RateTrackingPoint {
+  weekLabel: string;
+  ratePercent: number;
+}
+
+export interface MicroMarketSensitivity {
+  sensitivityCoefficient: number; // how many % local prices move per 1% rate change, e.g. 1.4 = amplified, 0.6 = dampened
+  interpretation: string;
+  currentRate: number;
+  rateChange30dPercent: number;
+  projectedLocalPriceImpactPercent: number;
+}
+
+export function calculateMicroMarketSensitivity(
+  sensitivityCoefficient: number,
+  currentRate: number,
+  rateChange30dPercent: number
+): MicroMarketSensitivity {
+  const projectedLocalPriceImpactPercent = Math.round(-rateChange30dPercent * sensitivityCoefficient * 100) / 100;
+  const interpretation =
+    sensitivityCoefficient >= 1.2
+      ? "This micro-market historically overreacts to rate changes -- larger price swings than the national average."
+      : sensitivityCoefficient <= 0.8
+      ? "This micro-market historically dampens rate changes -- smaller price swings than the national average."
+      : "This micro-market historically tracks national rate sensitivity closely.";
+
+  return {
+    sensitivityCoefficient,
+    interpretation,
+    currentRate,
+    rateChange30dPercent,
+    projectedLocalPriceImpactPercent,
+  };
+}

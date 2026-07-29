@@ -7,8 +7,13 @@ import ComparativeMarketAnalysis from "./ComparativeMarketAnalysis";
 import ScenarioBuilder from "./ScenarioBuilder";
 import ReportExport from "./ReportExport";
 import NeighborhoodAnalytics from "./NeighborhoodAnalytics";
+import DynamicRenovationEngine from "./DynamicRenovationEngine";
+import CapitalDecisionEngine from "./CapitalDecisionEngine";
+import MicroMarketSensitivity from "./MicroMarketSensitivity";
 
-const TABS = [
+export type DashboardTier = "pro" | "max";
+
+const PRO_TABS = [
   { key: "financial", label: "Financial & ROI", component: FinancialROIModeling },
   { key: "cma", label: "Market Analysis", component: ComparativeMarketAnalysis },
   { key: "scenario", label: "What-If Builder", component: ScenarioBuilder },
@@ -16,18 +21,30 @@ const TABS = [
   { key: "export", label: "Export & Import", component: ReportExport },
 ] as const;
 
-export default function PremiumDashboard() {
-  const [activeTab, setActiveTab] = useState<(typeof TABS)[number]["key"]>("financial");
-  const ActiveComponent = TABS.find((t) => t.key === activeTab)!.component;
+const MAX_ONLY_TABS = [
+  { key: "dynamic_renovation", label: "Renovation Engine", component: DynamicRenovationEngine },
+  { key: "capital_decision", label: "Capital Decision", component: CapitalDecisionEngine },
+  { key: "micro_market", label: "Rate Sensitivity", component: MicroMarketSensitivity },
+] as const;
+
+export default function PremiumDashboard({ tier }: { tier: DashboardTier }) {
+  const tabs = tier === "max" ? [...PRO_TABS, ...MAX_ONLY_TABS] : PRO_TABS;
+  const [activeTab, setActiveTab] = useState<string>(tabs[0].key);
+  const ActiveComponent = tabs.find((t) => t.key === activeTab)?.component ?? tabs[0].component;
 
   return (
     <div className="w-full max-w-5xl mx-auto px-6 py-10">
       <div className="flex items-center gap-2 mb-2">
         <span
           className="text-[10px] uppercase tracking-wide px-2 py-1 rounded-sm"
-          style={{ backgroundColor: COLORS.goldSoft, color: COLORS.ink, fontFamily: FONT_FAMILY.body, letterSpacing: "0.06em" }}
+          style={{
+            backgroundColor: tier === "max" ? COLORS.goldSoft : COLORS.mossSoft,
+            color: COLORS.ink,
+            fontFamily: FONT_FAMILY.body,
+            letterSpacing: "0.06em",
+          }}
         >
-          Max feature
+          {tier === "max" ? "Max plan" : "Pro plan"}
         </span>
       </div>
       <h1 className="text-3xl mb-8" style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: COLORS.ink }}>
@@ -35,7 +52,7 @@ export default function PremiumDashboard() {
       </h1>
 
       <div className="flex flex-wrap gap-1 mb-8 border-b" style={{ borderColor: COLORS.hairline }}>
-        {TABS.map((tab) => (
+        {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
@@ -53,6 +70,15 @@ export default function PremiumDashboard() {
       </div>
 
       <ActiveComponent />
+
+      {tier === "pro" && (
+        <div className="mt-12 rounded-sm p-5 border" style={{ borderColor: COLORS.gold, backgroundColor: COLORS.goldSoft }}>
+          <p className="text-sm" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.ink }}>
+            <strong>Max</strong> unlocks 3 additional engines: real-time renovation cost adjustment, automated
+            capital decisions with confidence scoring, and hyper-local rate sensitivity tracking.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
