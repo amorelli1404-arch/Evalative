@@ -8,6 +8,7 @@ interface Tier {
   name: string;
   backendTier: "starter" | "homeowner_pro" | null;
   price: string;
+  originalPrice?: string;
   cadence: string;
   description: string;
   features: string[];
@@ -26,7 +27,8 @@ const TIERS: Tier[] = [
   {
     name: "Pro",
     backendTier: "starter",
-    price: "$9.99",
+    price: "$5.99",
+    originalPrice: "$9.99",
     cadence: "/ month",
     description: "For an active decision you're tracking.",
     features: [
@@ -40,7 +42,8 @@ const TIERS: Tier[] = [
   {
     name: "Max",
     backendTier: "homeowner_pro",
-    price: "$19.99",
+    price: "$11.99",
+    originalPrice: "$19.99",
     cadence: "/ month",
     description: "Everything, plus room to grow.",
     features: [
@@ -105,18 +108,36 @@ export default function Pricing({ onFreeSelect }: { onFreeSelect?: () => void })
               border: tier.highlighted ? `2px solid ${COLORS.moss}` : `1px solid ${COLORS.hairline}`,
             }}
           >
-            {tier.highlighted && (
-              <span
-                className="text-[11px] uppercase tracking-wide px-2 py-1 rounded-sm self-start mb-3"
-                style={{ backgroundColor: COLORS.mossSoft, color: COLORS.moss, fontFamily: FONT_FAMILY.mono }}
-              >
-                Most popular
-              </span>
-            )}
+            <div className="flex items-center gap-2 mb-3">
+              {tier.highlighted && (
+                <span
+                  className="text-[11px] uppercase tracking-wide px-2 py-1 rounded-sm self-start"
+                  style={{ backgroundColor: COLORS.mossSoft, color: COLORS.moss, fontFamily: FONT_FAMILY.mono }}
+                >
+                  Most popular
+                </span>
+              )}
+              {tier.originalPrice && (
+                <span
+                  className="text-[11px] uppercase tracking-wide px-2 py-1 rounded-sm self-start"
+                  style={{ backgroundColor: "#FDE8E8", color: "#B23B3B", fontFamily: FONT_FAMILY.mono }}
+                >
+                  40% off
+                </span>
+              )}
+            </div>
             <h3 style={{ fontFamily: FONT_FAMILY.display, fontSize: "18px", fontWeight: 600, color: COLORS.ink }}>
               {tier.name}
             </h3>
             <div className="flex items-baseline gap-1 mt-2 mb-1">
+              {tier.originalPrice && (
+                <span
+                  className="line-through"
+                  style={{ fontFamily: FONT_FAMILY.mono, fontSize: "15px", color: COLORS.inkMuted }}
+                >
+                  {tier.originalPrice}
+                </span>
+              )}
               <span style={{ fontFamily: FONT_FAMILY.mono, fontSize: "28px", color: COLORS.ink }}>{tier.price}</span>
               <span style={{ fontFamily: FONT_FAMILY.mono, fontSize: "13px", color: COLORS.inkMuted }}>{tier.cadence}</span>
             </div>
