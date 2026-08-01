@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
 
 function SignUpCTA({ onClick }: { onClick?: () => void }) {
@@ -82,7 +82,7 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
               <path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z" />
             </svg>
           </button>
-          <Show when="signed-out">
+          <SignedOut>
             <SignInButton mode="modal">
               <button
                 className="px-5 py-2 text-sm uppercase tracking-wide rounded-sm border transition-colors duration-150"
@@ -97,10 +97,10 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
               </button>
             </SignInButton>
             <SignUpCTA />
-          </Show>
-          <Show when="signed-in">
+          </SignedOut>
+          <SignedIn>
             <UserButton afterSignOutUrl="/" />
-          </Show>
+          </SignedIn>
         </div>
 
         <button
@@ -127,7 +127,7 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
               {link.label}
             </Link>
           ))}
-          <Show when="signed-out">
+          <SignedOut>
             <div className="flex items-center gap-3">
               <SignInButton mode="modal">
                 <button
@@ -140,15 +140,15 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
               </SignInButton>
               <SignUpCTA onClick={() => setMobileMenuOpen(false)} />
             </div>
-          </Show>
-          <Show when="signed-in">
+          </SignedOut>
+          <SignedIn>
             <div className="flex items-center gap-3">
               <UserButton afterSignOutUrl="/" />
               <span className="text-sm" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.ink }}>
                 Account
               </span>
             </div>
-          </Show>
+          </SignedIn>
         </div>
       )}
     </header>
