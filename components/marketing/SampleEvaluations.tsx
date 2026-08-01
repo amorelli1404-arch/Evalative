@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
+import SampleReportModal from "./SampleReportModal";
 
 interface SampleCard {
   imageUrl: string;
@@ -47,6 +49,8 @@ const SAMPLES: SampleCard[] = [
 ];
 
 export default function SampleEvaluations({ onExploreAll }: { onExploreAll: () => void }) {
+  const [sampleReportOpen, setSampleReportOpen] = useState(false);
+
   return (
     <section className="w-full max-w-6xl mx-auto px-6 py-20">
       <div className="flex items-end justify-between mb-10">
@@ -116,6 +120,18 @@ export default function SampleEvaluations({ onExploreAll }: { onExploreAll: () =
           </div>
         ))}
       </div>
+
+      <div className="flex justify-center mt-10">
+        <button
+          onClick={() => setSampleReportOpen(true)}
+          className="px-6 py-3 rounded-sm text-sm font-medium border transition-colors duration-150 hover:bg-black/5"
+          style={{ fontFamily: FONT_FAMILY.body, color: COLORS.ink, borderColor: COLORS.hairline }}
+        >
+          View Full Sample Report
+        </button>
+      </div>
+
+      <SampleReportModal open={sampleReportOpen} onClose={() => setSampleReportOpen(false)} />
     </section>
   );
 }

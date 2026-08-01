@@ -1,14 +1,30 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { FONT_FAMILY } from "../../lib/design-tokens";
 import DisclaimerBanner from "../legal/DisclaimerBanner";
+import TrustBadges from "./TrustBadges";
 
-const COLUMNS = [
-  { title: "Company", links: ["About", "Pricing", "Careers"] },
-  { title: "Support", links: ["Help Center", "Contact Us", "FAQ"] },
-  { title: "Legal", links: ["Terms of Service", "Privacy Policy", "Disclosures"] },
-  { title: "Follow Us", links: ["Instagram", "LinkedIn", "X"] },
+const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
+  {
+    title: "Company",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "Pricing", href: "/pricing" },
+    ],
+  },
+  {
+    title: "Support",
+    links: [{ label: "FAQ", href: "/faq" }],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Terms of Service", href: "/terms" },
+      { label: "Privacy Policy", href: "/privacy" },
+    ],
+  },
 ];
 
 export default function Footer() {
@@ -17,7 +33,7 @@ export default function Footer() {
 
   return (
     <footer style={{ backgroundColor: "#111111" }} className="w-full">
-      <div className="max-w-6xl mx-auto px-6 py-16 grid sm:grid-cols-2 lg:grid-cols-5 gap-10">
+      <div className="max-w-6xl mx-auto px-6 py-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
         {COLUMNS.map((col) => (
           <div key={col.title}>
             <h4 className="text-xs uppercase tracking-wide mb-4" style={{ fontFamily: FONT_FAMILY.body, color: "#D4AF37", letterSpacing: "0.1em" }}>
@@ -25,10 +41,14 @@ export default function Footer() {
             </h4>
             <ul className="flex flex-col gap-3">
               {col.links.map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-sm" style={{ fontFamily: FONT_FAMILY.body, color: "#B8B8B8" }}>
-                    {link}
-                  </a>
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm transition-colors duration-150 hover:text-white"
+                    style={{ fontFamily: FONT_FAMILY.body, color: "#B8B8B8" }}
+                  >
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -73,6 +93,12 @@ export default function Footer() {
               </button>
             </form>
           )}
+        </div>
+      </div>
+
+      <div className="border-t" style={{ borderColor: "#2A2A2A" }}>
+        <div className="max-w-6xl mx-auto px-6 py-8">
+          <TrustBadges variant="dark" />
         </div>
       </div>
 

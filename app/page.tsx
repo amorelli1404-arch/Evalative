@@ -3,11 +3,14 @@
 import { useRef } from "react";
 import Header from "../components/marketing/Header";
 import Hero from "../components/marketing/Hero";
+import Methodology from "../components/marketing/Methodology";
 import SampleEvaluations from "../components/marketing/SampleEvaluations";
 import Destinations from "../components/marketing/Destinations";
 import ValueProps from "../components/marketing/ValueProps";
 import NearbyMatchFeature from "../components/marketing/NearbyMatchFeature";
 import FoundingOffer from "../components/marketing/FoundingOffer";
+import ComparisonMatrix from "../components/marketing/ComparisonMatrix";
+import SocialProof from "../components/marketing/SocialProof";
 import Pricing from "../components/marketing/Pricing";
 import InteractiveDemo from "../components/marketing/InteractiveDemo";
 import Footer from "../components/marketing/Footer";
@@ -22,11 +25,14 @@ export default function HomePage() {
     <main style={{ backgroundColor: "#FFFFFF", minHeight: "100vh" }} className="flex flex-col items-center">
       <Header />
       <Hero onGetStarted={() => scrollToDemo()} />
+      <Methodology />
       <SampleEvaluations onExploreAll={scrollToDemo} />
       <Destinations />
       <ValueProps />
       <NearbyMatchFeature onSeePricing={scrollToPricing} />
       <FoundingOffer onSeePricing={scrollToPricing} />
+      <ComparisonMatrix />
+      <SocialProof />
       <Pricing onFreeSelect={scrollToDemo} />
       <InteractiveDemo ref={demoRef} />
       <Footer />

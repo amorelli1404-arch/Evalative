@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
 import { startCheckout } from "../../app/checkout-actions";
+import TrustBadges from "./TrustBadges";
+import SampleReportModal from "./SampleReportModal";
 
 interface Tier {
   name: string;
@@ -60,6 +62,7 @@ const TIERS: Tier[] = [
 export default function Pricing({ onFreeSelect }: { onFreeSelect?: () => void }) {
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [sampleReportOpen, setSampleReportOpen] = useState(false);
 
   const handleSelect = async (tier: Tier) => {
     if (tier.backendTier === null) {
@@ -155,7 +158,7 @@ export default function Pricing({ onFreeSelect }: { onFreeSelect?: () => void })
             <button
               onClick={() => handleSelect(tier)}
               disabled={loadingTier === tier.name}
-              className="w-full py-2 rounded-sm text-sm font-medium"
+              className="w-full py-2 rounded-sm text-sm font-medium transition-opacity duration-150"
               style={{
                 backgroundColor: tier.highlighted ? COLORS.ink : "white",
                 color: tier.highlighted ? COLORS.paper : COLORS.ink,
@@ -166,9 +169,27 @@ export default function Pricing({ onFreeSelect }: { onFreeSelect?: () => void })
             >
               {loadingTier === tier.name ? "Redirecting to checkout..." : tier.name === "Free" ? "Get started" : `Choose ${tier.name}`}
             </button>
+            {tier.name === "Pro" && (
+              <p className="text-xs text-center mt-3 leading-snug" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
+                14-day full refund policy — test your property risk-free.
+              </p>
+            )}
           </div>
         ))}
       </div>
+
+      <div className="flex flex-col items-center gap-6 mt-10">
+        <button
+          onClick={() => setSampleReportOpen(true)}
+          className="px-6 py-3 rounded-sm text-sm font-medium border transition-colors duration-150 hover:bg-black/5"
+          style={{ fontFamily: FONT_FAMILY.body, color: COLORS.ink, borderColor: COLORS.hairline }}
+        >
+          View Full Sample Report
+        </button>
+        <TrustBadges variant="light" />
+      </div>
+
+      <SampleReportModal open={sampleReportOpen} onClose={() => setSampleReportOpen(false)} />
     </section>
   );
 }
