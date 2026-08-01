@@ -5,6 +5,29 @@ import Link from "next/link";
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
 
+function SignUpCTA({ onClick }: { onClick?: () => void }) {
+  return (
+    <SignUpButton mode="modal">
+      <button
+        onClick={onClick}
+        className="group px-6 py-2.5 text-sm font-semibold uppercase tracking-wide rounded-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(212,175,55,0.45)] active:translate-y-0"
+        style={{
+          fontFamily: FONT_FAMILY.body,
+          letterSpacing: "0.08em",
+          background: `linear-gradient(135deg, #E7C463 0%, ${COLORS.gold} 100%)`,
+          color: "#1A1A1A",
+          boxShadow: "0 2px 10px rgba(212,175,55,0.35)",
+        }}
+      >
+        <span className="inline-flex items-center gap-1.5">
+          Sign Up
+          <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+        </span>
+      </button>
+    </SignUpButton>
+  );
+}
+
 export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean }) {
   const [scrolled, setScrolled] = useState(alwaysSolid);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -73,14 +96,7 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
                 Log In
               </button>
             </SignInButton>
-            <SignUpButton mode="modal">
-              <button
-                className="px-5 py-2 text-sm uppercase tracking-wide rounded-sm transition-opacity duration-150 hover:opacity-90"
-                style={{ fontFamily: FONT_FAMILY.body, letterSpacing: "0.08em", backgroundColor: COLORS.gold, color: "#1A1A1A" }}
-              >
-                Sign Up
-              </button>
-            </SignUpButton>
+            <SignUpCTA />
           </Show>
           <Show when="signed-in">
             <UserButton afterSignOutUrl="/" />
@@ -122,15 +138,7 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
                   Log In
                 </button>
               </SignInButton>
-              <SignUpButton mode="modal">
-                <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-5 py-2 text-sm uppercase tracking-wide rounded-sm"
-                  style={{ fontFamily: FONT_FAMILY.body, letterSpacing: "0.08em", backgroundColor: COLORS.gold, color: "#1A1A1A" }}
-                >
-                  Sign Up
-                </button>
-              </SignUpButton>
+              <SignUpCTA onClick={() => setMobileMenuOpen(false)} />
             </div>
           </Show>
           <Show when="signed-in">
