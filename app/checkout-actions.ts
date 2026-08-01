@@ -1,19 +1,18 @@
 "use server";
 
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { createCheckoutSession } from "../lib/api";
-
-async function getAuthenticatedUserId(): Promise<string> {
-  throw new Error(
-    "getAuthenticatedUserId() is not implemented -- wire this to your Clerk server-side " +
-      "session verification before checkout can run for a real user."
-  );
-}
 
 export async function startCheckout(
   tier: "starter" | "homeowner_pro" | "investor",
   billingInterval: "month" | "year"
 ): Promise<{ checkoutUrl: string }> {
-  const userId = await getAuthenticatedUserId();
+  const { userId } = await auth();
+  if (!userId) {
+    redirect("/sign-up");
+  }
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
   return createCheckoutSession(userId, {

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Montserrat, IBM_Plex_Mono } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
+import { COLORS } from "../lib/design-tokens";
 import "./globals.css";
 
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-playfair", display: "swap" });
@@ -14,7 +16,19 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${playfair.variable} ${montserrat.variable} ${plexMono.variable}`}>
-      <body className="font-body">{children}</body>
+      <body className="font-body">
+        <ClerkProvider
+          appearance={{
+            variables: {
+              colorPrimary: COLORS.ink,
+              colorText: COLORS.ink,
+              borderRadius: "2px",
+            },
+          }}
+        >
+          {children}
+        </ClerkProvider>
+      </body>
     </html>
   );
 }

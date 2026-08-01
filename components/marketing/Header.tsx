@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
 
 export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean }) {
@@ -58,17 +59,32 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
               <path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z" />
             </svg>
           </button>
-          <button
-            className="px-5 py-2 text-sm uppercase tracking-wide rounded-sm border"
-            style={{
-              fontFamily: FONT_FAMILY.body,
-              letterSpacing: "0.08em",
-              color: isSolid ? COLORS.ink : "#FFFFFF",
-              borderColor: isSolid ? COLORS.ink : "#FFFFFF",
-            }}
-          >
-            Log In
-          </button>
+          <Show when="signed-out">
+            <SignInButton mode="modal">
+              <button
+                className="px-5 py-2 text-sm uppercase tracking-wide rounded-sm border transition-colors duration-150"
+                style={{
+                  fontFamily: FONT_FAMILY.body,
+                  letterSpacing: "0.08em",
+                  color: isSolid ? COLORS.ink : "#FFFFFF",
+                  borderColor: isSolid ? COLORS.ink : "#FFFFFF",
+                }}
+              >
+                Log In
+              </button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <button
+                className="px-5 py-2 text-sm uppercase tracking-wide rounded-sm transition-opacity duration-150 hover:opacity-90"
+                style={{ fontFamily: FONT_FAMILY.body, letterSpacing: "0.08em", backgroundColor: COLORS.gold, color: "#1A1A1A" }}
+              >
+                Sign Up
+              </button>
+            </SignUpButton>
+          </Show>
+          <Show when="signed-in">
+            <UserButton afterSignOutUrl="/" />
+          </Show>
         </div>
 
         <button
@@ -95,12 +111,36 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
               {link.label}
             </Link>
           ))}
-          <button
-            className="px-5 py-2 text-sm uppercase tracking-wide rounded-sm border self-start"
-            style={{ fontFamily: FONT_FAMILY.body, letterSpacing: "0.08em", color: COLORS.ink, borderColor: COLORS.ink }}
-          >
-            Log In
-          </button>
+          <Show when="signed-out">
+            <div className="flex items-center gap-3">
+              <SignInButton mode="modal">
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-5 py-2 text-sm uppercase tracking-wide rounded-sm border"
+                  style={{ fontFamily: FONT_FAMILY.body, letterSpacing: "0.08em", color: COLORS.ink, borderColor: COLORS.ink }}
+                >
+                  Log In
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-5 py-2 text-sm uppercase tracking-wide rounded-sm"
+                  style={{ fontFamily: FONT_FAMILY.body, letterSpacing: "0.08em", backgroundColor: COLORS.gold, color: "#1A1A1A" }}
+                >
+                  Sign Up
+                </button>
+              </SignUpButton>
+            </div>
+          </Show>
+          <Show when="signed-in">
+            <div className="flex items-center gap-3">
+              <UserButton afterSignOutUrl="/" />
+              <span className="text-sm" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.ink }}>
+                Account
+              </span>
+            </div>
+          </Show>
         </div>
       )}
     </header>
