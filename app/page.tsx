@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Header from "../components/marketing/Header";
 import Hero from "../components/marketing/Hero";
+import InstantSampleReportPreview from "../components/marketing/InstantSampleReportPreview";
 import Methodology from "../components/marketing/Methodology";
 import SampleEvaluations from "../components/marketing/SampleEvaluations";
 import Destinations from "../components/marketing/Destinations";
@@ -25,6 +26,7 @@ export default function HomePage() {
     <main style={{ backgroundColor: "#FFFFFF", minHeight: "100vh" }} className="flex flex-col items-center">
       <Header />
       <Hero onGetStarted={() => scrollToDemo()} />
+      <InstantSampleReportPreview onGetStarted={scrollToDemo} />
       <Methodology />
       <SampleEvaluations onExploreAll={scrollToDemo} />
       <Destinations />

@@ -24,12 +24,21 @@ const HOTSPOTS = [
   { id: 3, top: "72%", left: "20%", title: "Comparable Sales", body: "The three most recent, closest comparable sales used to ground this quarter's number — with distance and sale date shown." },
 ];
 
-export default function SampleReportModal({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const [tab, setTab] = useState<TabId>("verdict");
+export default function SampleReportModal({
+  open,
+  onClose,
+  initialTab = "verdict",
+}: {
+  open: boolean;
+  onClose: () => void;
+  initialTab?: TabId;
+}) {
+  const [tab, setTab] = useState<TabId>(initialTab);
   const [activeHotspot, setActiveHotspot] = useState<number>(1);
 
   useEffect(() => {
     if (!open) return;
+    setTab(initialTab);
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
@@ -39,6 +48,7 @@ export default function SampleReportModal({ open, onClose }: { open: boolean; on
       window.removeEventListener("keydown", handleKey);
       document.body.style.overflow = "";
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, onClose]);
 
   if (!open) return null;
