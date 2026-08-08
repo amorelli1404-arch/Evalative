@@ -12,26 +12,36 @@ const FREE_FEATURES = [
 export default function PricingSection({ onFreeSelect }: { onFreeSelect?: () => void }) {
   return (
     <section id="pricing" className="w-full max-w-4xl mx-auto px-6 py-14 border-t" style={{ borderColor: COLORS.hairline }}>
-      <div className="text-center mb-10">
+      <div className="flex flex-col items-center text-center mb-12">
         <span
-          className="text-xs uppercase tracking-wide block mb-2"
-          style={{ fontFamily: FONT_FAMILY.mono, color: COLORS.inkMuted }}
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs uppercase tracking-wide mb-5"
+          style={{ borderColor: COLORS.gold, color: COLORS.ink, fontFamily: FONT_FAMILY.mono }}
         >
-          Founding member pricing
+          <span style={{ color: COLORS.gold }}>●</span>
+          Simple, honest pricing
         </span>
-        <h2 style={{ fontFamily: FONT_FAMILY.display, fontSize: "26px", fontWeight: 600, color: COLORS.ink }}>
-          Start free. Lock in this rate for as long as you stay.
+        <h2 style={{ fontFamily: FONT_FAMILY.display, fontSize: "32px", fontWeight: 600, color: COLORS.ink }}>
+          Choose your plan
         </h2>
+        <p className="text-sm mt-3 max-w-md" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
+          Start free. Lock in founding member pricing for as long as you stay subscribed.
+        </p>
       </div>
 
       {/* Free tier — given room to explain itself, not squeezed into a narrow card */}
       <div
-        className="rounded-sm p-8 mb-10 grid md:grid-cols-[1fr_auto] gap-8 items-center"
-        style={{ backgroundColor: COLORS.goldSoft, border: `1px solid ${COLORS.hairline}` }}
+        className="p-8 mb-8 grid md:grid-cols-[1fr_auto] gap-8 items-center"
+        style={{ backgroundColor: COLORS.goldSoft, border: `1px solid ${COLORS.hairline}`, borderRadius: "24px" }}
       >
         <div>
+          <div
+            className="w-10 h-10 rounded-full flex items-center justify-center mb-4"
+            style={{ backgroundColor: "white", border: `1px solid ${COLORS.hairline}` }}
+          >
+            <span style={{ color: COLORS.gold, fontSize: "16px" }}>✓</span>
+          </div>
           <span
-            className="text-[11px] uppercase tracking-wide px-2 py-1 rounded-sm inline-block mb-3"
+            className="text-[11px] uppercase tracking-wide px-3 py-1 rounded-full inline-block mb-3"
             style={{ backgroundColor: "white", color: COLORS.inkMuted, fontFamily: FONT_FAMILY.mono }}
           >
             No commitment
@@ -63,7 +73,7 @@ export default function PricingSection({ onFreeSelect }: { onFreeSelect?: () => 
         </div>
         <button
           onClick={onFreeSelect}
-          className="px-8 py-3 rounded-sm text-sm font-medium whitespace-nowrap"
+          className="px-8 py-3.5 rounded-full text-sm font-medium whitespace-nowrap"
           style={{ fontFamily: FONT_FAMILY.body, backgroundColor: COLORS.ink, color: "#FFFFFF" }}
         >
           Get started free
@@ -80,17 +90,18 @@ export default function PricingSection({ onFreeSelect }: { onFreeSelect?: () => 
             colorBackground: COLORS.paper,
             colorBorder: COLORS.hairline,
             fontFamily: FONT_FAMILY.body,
-            borderRadius: "2px",
+            borderRadius: "24px",
           },
           elements: {
             pricingTableCard: {
               border: `1px solid ${COLORS.hairline}`,
               boxShadow: "none",
+              padding: "28px",
             },
             pricingTableCardTitle: {
               fontFamily: FONT_FAMILY.display,
               fontWeight: 600,
-              fontSize: "19px",
+              fontSize: "20px",
               color: COLORS.ink,
             },
             pricingTableCardDescription: {
@@ -99,6 +110,7 @@ export default function PricingSection({ onFreeSelect }: { onFreeSelect?: () => 
             },
             pricingTableCardFee: {
               fontFamily: FONT_FAMILY.mono,
+              fontSize: "34px",
               color: COLORS.ink,
             },
             pricingTableCardFeaturesListItem: {
@@ -107,7 +119,10 @@ export default function PricingSection({ onFreeSelect }: { onFreeSelect?: () => 
             },
             pricingTableCardFooterButton: {
               fontFamily: FONT_FAMILY.body,
+              fontWeight: 600,
+              borderRadius: "999px",
               boxShadow: "none",
+              padding: "14px",
             },
           },
         }}
