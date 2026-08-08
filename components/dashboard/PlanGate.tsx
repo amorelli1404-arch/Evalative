@@ -1,21 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { Show } from "@clerk/nextjs";
+import { Protect } from "@clerk/nextjs";
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
 
 export default function PlanGate({
-  when,
+  condition,
   planLabel,
   children,
 }: {
-  when: (has: (check: { plan: string }) => boolean) => boolean;
+  condition: (has: (check: { plan: string }) => boolean) => boolean;
   planLabel: string;
   children: React.ReactNode;
 }) {
   return (
-    <Show
-      when={when}
+    <Protect
+      condition={condition}
       fallback={
         <div className="w-full max-w-xl mx-auto px-6 py-24 text-center">
           <h1 className="text-2xl mb-3" style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: COLORS.ink }}>
@@ -35,6 +35,6 @@ export default function PlanGate({
       }
     >
       {children}
-    </Show>
+    </Protect>
   );
 }

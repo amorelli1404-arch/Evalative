@@ -36,7 +36,7 @@ export default function HomePage() {
       <ComparisonMatrix />
       <SocialProof />
       <section id="pricing" className="w-full max-w-4xl mx-auto px-6 py-14">
-        <PricingTable highlightedPlan="pro" />
+        <PricingTable />
       </section>
       <InteractiveDemo ref={demoRef} />
       <Footer />

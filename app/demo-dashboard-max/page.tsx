@@ -11,7 +11,7 @@ export default function DemoDashboardMaxPage() {
     <main style={{ backgroundColor: COLORS.paper, minHeight: "100vh" }} className="flex flex-col items-center">
       <Header alwaysSolid />
       <div style={{ height: "80px" }} />
-      <PlanGate when={(has) => has({ plan: "max" })} planLabel="Max">
+      <PlanGate condition={(has) => has({ plan: "max" })} planLabel="Max">
         <PremiumDashboard tier="max" />
       </PlanGate>
       <Footer />

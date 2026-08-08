@@ -40,7 +40,7 @@ export default function PricingPage() {
       </PhotoCarousel>
 
       <section id="pricing" className="w-full max-w-4xl mx-auto px-6 py-14 border-t" style={{ borderColor: COLORS.hairline }}>
-        <PricingTable highlightedPlan="pro" />
+        <PricingTable />
       </section>
 
       {/* Mission section */}
