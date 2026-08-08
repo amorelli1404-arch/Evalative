@@ -1,8 +1,8 @@
 "use client";
 
+import { PricingTable } from "@clerk/nextjs";
 import Header from "../../components/marketing/Header";
 import Footer from "../../components/marketing/Footer";
-import Pricing from "../../components/marketing/Pricing";
 import PhotoCarousel, { type CarouselSlide } from "../../components/marketing/PhotoCarousel";
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
 
@@ -23,10 +23,6 @@ const SLIDES: CarouselSlide[] = [
   { url: "https://images.unsplash.com/photo-1757359056339-22968344cce6?auto=format&fit=crop&w=1800&q=80", alt: "A modern home at dusk" },
 ];
 
-function scrollToDemo() {
-  window.location.href = "/#pricing";
-}
-
 export default function PricingPage() {
   return (
     <main style={{ backgroundColor: COLORS.paper, minHeight: "100vh" }} className="flex flex-col items-center">
@@ -43,7 +39,9 @@ export default function PricingPage() {
         </div>
       </PhotoCarousel>
 
-      <Pricing onFreeSelect={scrollToDemo} />
+      <section id="pricing" className="w-full max-w-4xl mx-auto px-6 py-14 border-t" style={{ borderColor: COLORS.hairline }}>
+        <PricingTable highlightedPlan="pro" />
+      </section>
 
       {/* Mission section */}
       <section className="w-full max-w-3xl px-6 py-16 border-t" style={{ borderColor: COLORS.hairline }}>
