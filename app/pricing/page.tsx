@@ -1,9 +1,9 @@
 "use client";
 
-import { PricingTable } from "@clerk/nextjs";
 import Header from "../../components/marketing/Header";
 import Footer from "../../components/marketing/Footer";
 import PhotoCarousel, { type CarouselSlide } from "../../components/marketing/PhotoCarousel";
+import PricingSection from "../../components/marketing/PricingSection";
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
 
 /**
@@ -39,9 +39,7 @@ export default function PricingPage() {
         </div>
       </PhotoCarousel>
 
-      <section id="pricing" className="w-full max-w-4xl mx-auto px-6 py-14 border-t" style={{ borderColor: COLORS.hairline }}>
-        <PricingTable />
-      </section>
+      <PricingSection onFreeSelect={() => { window.location.href = "/#pricing"; }} />
 
       {/* Mission section */}
       <section className="w-full max-w-3xl px-6 py-16 border-t" style={{ borderColor: COLORS.hairline }}>

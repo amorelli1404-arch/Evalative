@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import { PricingTable } from "@clerk/nextjs";
 import Header from "../components/marketing/Header";
 import Hero from "../components/marketing/Hero";
 import InstantSampleReportPreview from "../components/marketing/InstantSampleReportPreview";
@@ -13,6 +12,7 @@ import NearbyMatchFeature from "../components/marketing/NearbyMatchFeature";
 import FoundingOffer from "../components/marketing/FoundingOffer";
 import ComparisonMatrix from "../components/marketing/ComparisonMatrix";
 import SocialProof from "../components/marketing/SocialProof";
+import PricingSection from "../components/marketing/PricingSection";
 import InteractiveDemo from "../components/marketing/InteractiveDemo";
 import Footer from "../components/marketing/Footer";
 
@@ -35,9 +35,7 @@ export default function HomePage() {
       <FoundingOffer onSeePricing={scrollToPricing} />
       <ComparisonMatrix />
       <SocialProof />
-      <section id="pricing" className="w-full max-w-4xl mx-auto px-6 py-14">
-        <PricingTable />
-      </section>
+      <PricingSection onFreeSelect={scrollToDemo} />
       <InteractiveDemo ref={demoRef} />
       <Footer />
     </main>
