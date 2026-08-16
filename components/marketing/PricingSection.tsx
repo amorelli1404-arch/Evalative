@@ -9,9 +9,11 @@ const FREE_FEATURES = [
   "No credit card required",
 ];
 
+const CARD_RADIUS = "24px";
+
 export default function PricingSection({ onFreeSelect }: { onFreeSelect?: () => void }) {
   return (
-    <section id="pricing" className="w-full max-w-4xl mx-auto px-6 py-14 border-t" style={{ borderColor: COLORS.hairline }}>
+    <section id="pricing" className="w-full max-w-6xl mx-auto px-6 py-14 border-t" style={{ borderColor: COLORS.hairline }}>
       <div className="flex flex-col items-center text-center mb-12">
         <span
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs uppercase tracking-wide mb-5"
@@ -28,41 +30,35 @@ export default function PricingSection({ onFreeSelect }: { onFreeSelect?: () => 
         </p>
       </div>
 
-      {/* Free tier — given room to explain itself, not squeezed into a narrow card */}
-      <div
-        className="p-8 mb-8 grid md:grid-cols-[1fr_auto] gap-8 items-center"
-        style={{ backgroundColor: COLORS.goldSoft, border: `1px solid ${COLORS.hairline}`, borderRadius: "24px" }}
-      >
-        <div>
-          <div
-            className="w-10 h-10 rounded-full flex items-center justify-center mb-4"
-            style={{ backgroundColor: "white", border: `1px solid ${COLORS.hairline}` }}
-          >
-            <span style={{ color: COLORS.gold, fontSize: "16px" }}>✓</span>
-          </div>
+      <div className="grid md:grid-cols-3 gap-6 items-stretch">
+        {/* Free tier — styled to match the Pro/Max cards so all three sit as one row */}
+        <div
+          className="p-7 flex flex-col"
+          style={{ backgroundColor: COLORS.goldSoft, border: `1px solid ${COLORS.hairline}`, borderRadius: CARD_RADIUS }}
+        >
           <span
-            className="text-[11px] uppercase tracking-wide px-3 py-1 rounded-full inline-block mb-3"
+            className="text-[11px] uppercase tracking-wide px-3 py-1 rounded-full self-start mb-4"
             style={{ backgroundColor: "white", color: COLORS.inkMuted, fontFamily: FONT_FAMILY.mono }}
           >
             No commitment
           </span>
-          <h3 style={{ fontFamily: FONT_FAMILY.display, fontSize: "22px", fontWeight: 600, color: COLORS.ink }}>
-            Free — 3 evaluations, no card required
+          <h3 style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, fontSize: "20px", color: COLORS.ink }}>
+            Free
           </h3>
           <p
-            className="text-sm mt-3 mb-4 max-w-xl"
-            style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted, lineHeight: 1.7 }}
+            className="mt-2"
+            style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted, fontSize: "14px" }}
           >
-            This is the same evaluation engine that powers Pro and Max — the same market data, the same verdict
-            logic — just capped at three uses instead of unlimited. It's enough to genuinely test-drive the
-            decision you're facing, not a watered-down demo. Run out of evaluations and like what you see?
-            Upgrade any time and your history carries over.
+            Test-drive the full evaluation engine
           </p>
-          <ul className="flex flex-wrap gap-x-6 gap-y-2">
+          <div className="mt-5 mb-5" style={{ fontFamily: FONT_FAMILY.mono, fontSize: "34px", color: COLORS.ink }}>
+            $0
+          </div>
+          <ul className="flex flex-col gap-2.5 mb-6">
             {FREE_FEATURES.map((feature) => (
               <li
                 key={feature}
-                className="flex items-center gap-2 text-sm"
+                className="flex items-start gap-2 text-sm"
                 style={{ fontFamily: FONT_FAMILY.body, color: COLORS.ink }}
               >
                 <span style={{ color: COLORS.moss }}>+</span>
@@ -70,63 +66,73 @@ export default function PricingSection({ onFreeSelect }: { onFreeSelect?: () => 
               </li>
             ))}
           </ul>
+          <button
+            onClick={onFreeSelect}
+            className="w-full py-3.5 rounded-full text-sm font-semibold mt-auto"
+            style={{ fontFamily: FONT_FAMILY.body, backgroundColor: COLORS.ink, color: "#FFFFFF" }}
+          >
+            Get started free
+          </button>
         </div>
-        <button
-          onClick={onFreeSelect}
-          className="px-8 py-3.5 rounded-full text-sm font-medium whitespace-nowrap"
-          style={{ fontFamily: FONT_FAMILY.body, backgroundColor: COLORS.ink, color: "#FFFFFF" }}
-        >
-          Get started free
-        </button>
-      </div>
 
-      <PricingTable
-        appearance={{
-          variables: {
-            colorPrimary: COLORS.gold,
-            colorPrimaryForeground: COLORS.ink,
-            colorText: COLORS.ink,
-            colorTextSecondary: COLORS.inkMuted,
-            colorBackground: COLORS.paper,
-            colorBorder: COLORS.hairline,
-            fontFamily: FONT_FAMILY.body,
-            borderRadius: "24px",
-          },
-          elements: {
-            pricingTableCard: {
-              border: `1px solid ${COLORS.hairline}`,
-              boxShadow: "none",
-              padding: "28px",
-            },
-            pricingTableCardTitle: {
-              fontFamily: FONT_FAMILY.display,
-              fontWeight: 600,
-              fontSize: "20px",
-              color: COLORS.ink,
-            },
-            pricingTableCardDescription: {
-              fontFamily: FONT_FAMILY.body,
-              color: COLORS.inkMuted,
-            },
-            pricingTableCardFee: {
-              fontFamily: FONT_FAMILY.mono,
-              fontSize: "34px",
-              color: COLORS.ink,
-            },
-            pricingTableCardFeaturesListItem: {
-              fontFamily: FONT_FAMILY.body,
-              color: COLORS.ink,
-            },
-            pricingTableCardFooterButton: {
-              fontFamily: FONT_FAMILY.body,
-              fontWeight: 600,
-              borderRadius: "999px",
-              boxShadow: "none",
-              padding: "14px",
-            },
-          },
-        }}
-      />
+        <div className="md:col-span-2 h-full">
+          <PricingTable
+            appearance={{
+              variables: {
+                colorPrimary: COLORS.gold,
+                colorPrimaryForeground: COLORS.ink,
+                colorText: COLORS.ink,
+                colorTextSecondary: COLORS.inkMuted,
+                colorBackground: COLORS.paper,
+                colorBorder: COLORS.hairline,
+                fontFamily: FONT_FAMILY.body,
+                borderRadius: "24px",
+              },
+              elements: {
+                pricingTableCards: {
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                  gap: "24px",
+                  alignItems: "stretch",
+                  height: "100%",
+                },
+                pricingTableCard: {
+                  border: `1px solid ${COLORS.hairline}`,
+                  boxShadow: "none",
+                  padding: "28px",
+                  height: "100%",
+                },
+                pricingTableCardTitle: {
+                  fontFamily: FONT_FAMILY.display,
+                  fontWeight: 600,
+                  fontSize: "20px",
+                  color: COLORS.ink,
+                },
+                pricingTableCardDescription: {
+                  fontFamily: FONT_FAMILY.body,
+                  color: COLORS.inkMuted,
+                },
+                pricingTableCardFee: {
+                  fontFamily: FONT_FAMILY.mono,
+                  fontSize: "34px",
+                  color: COLORS.ink,
+                },
+                pricingTableCardFeaturesListItem: {
+                  fontFamily: FONT_FAMILY.body,
+                  color: COLORS.ink,
+                },
+                pricingTableCardFooterButton: {
+                  fontFamily: FONT_FAMILY.body,
+                  fontWeight: 600,
+                  borderRadius: "999px",
+                  boxShadow: "none",
+                  padding: "14px",
+                },
+              },
+            }}
+          />
+        </div>
+      </div>
     </section>
   );
 }
