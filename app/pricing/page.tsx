@@ -39,7 +39,7 @@ export default function PricingPage() {
         </div>
       </PhotoCarousel>
 
-      <PricingSection onFreeSelect={() => { window.location.href = "/#pricing"; }} />
+      <PricingSection />
 
       {/* Mission section */}
       <section className="w-full max-w-3xl px-6 py-16 border-t" style={{ borderColor: COLORS.hairline }}>

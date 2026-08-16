@@ -35,7 +35,7 @@ export default function HomePage() {
       <FoundingOffer onSeePricing={scrollToPricing} />
       <ComparisonMatrix />
       <SocialProof />
-      <PricingSection onFreeSelect={scrollToDemo} />
+      <PricingSection />
       <InteractiveDemo ref={demoRef} />
       <Footer />
     </main>
