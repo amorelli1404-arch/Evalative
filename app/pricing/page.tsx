@@ -63,7 +63,7 @@ export default function PricingPage() {
       <PricingSection />
 
       {/* Reassurance strip */}
-      <div className="w-full max-w-4xl px-6 pb-12 flex flex-col items-center gap-5">
+      <div className="w-full max-w-4xl px-6 pt-2 pb-12 flex flex-col items-center gap-5">
         <TrustBadges />
         <p className="text-xs" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
           Questions about the plans?{" "}
@@ -82,7 +82,7 @@ export default function PricingPage() {
         <div className="flex flex-col items-center text-center mb-10">
           <span
             className="text-[11px] uppercase block mb-3"
-            style={{ fontFamily: FONT_FAMILY.mono, color: COLORS.inkMuted, letterSpacing: "0.14em" }}
+            style={{ fontFamily: FONT_FAMILY.mono, color: COLORS.ochre, letterSpacing: "0.14em" }}
           >
             Our thinking
           </span>
@@ -95,7 +95,7 @@ export default function PricingPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-9">
           {PRINCIPLES.map((principle, i) => (
             <div key={principle.title} className="pt-5 border-t" style={{ borderColor: COLORS.hairline }}>
-              <span className="text-[11px] block mb-2" style={{ fontFamily: FONT_FAMILY.mono, color: COLORS.gold, letterSpacing: "0.14em" }}>
+              <span className="text-[11px] block mb-2" style={{ fontFamily: FONT_FAMILY.mono, color: COLORS.ochre, letterSpacing: "0.14em" }}>
                 {String(i + 1).padStart(2, "0")}
               </span>
               <h3 className="text-base mb-3" style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: COLORS.ink }}>
