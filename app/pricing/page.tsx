@@ -28,28 +28,35 @@ export default function PricingPage() {
     <main style={{ backgroundColor: COLORS.paper, minHeight: "100vh" }} className="flex flex-col items-center">
       <Header />
 
-      <PhotoCarousel slides={SLIDES} minHeight="380px" overlayStrength="medium">
-        <div className="max-w-2xl mx-auto px-6 py-20 flex flex-col items-center text-center">
-          <span className="text-xs uppercase tracking-wide mb-3" style={{ fontFamily: FONT_FAMILY.mono, color: "#E4E2D8" }}>
+      <PhotoCarousel slides={SLIDES} minHeight="280px" overlayStrength="medium">
+        <div className="max-w-xl mx-auto px-6 pt-24 pb-14 flex flex-col items-center text-center">
+          <span className="text-[11px] uppercase mb-3" style={{ fontFamily: FONT_FAMILY.mono, color: "#E4E2D8", letterSpacing: "0.14em" }}>
             Pricing
           </span>
-          <h1 className="text-3xl sm:text-4xl leading-tight" style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: "#F5F4EF" }}>
+          <h1 className="text-2xl sm:text-3xl" style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: "#F5F4EF", lineHeight: 1.3 }}>
             Priced so the answer is worth more than what you paid for it
           </h1>
+          <span className="block mt-5" style={{ width: "32px", height: "1px", backgroundColor: COLORS.gold }} />
         </div>
       </PhotoCarousel>
 
       <PricingSection />
 
       {/* Mission section */}
-      <section className="w-full max-w-3xl px-6 py-16 border-t" style={{ borderColor: COLORS.hairline }}>
+      <section className="w-full max-w-xl px-6 py-12 border-t" style={{ borderColor: COLORS.hairline }}>
+        <span
+          className="text-[11px] uppercase block mb-3 text-center"
+          style={{ fontFamily: FONT_FAMILY.mono, color: COLORS.inkMuted, letterSpacing: "0.14em" }}
+        >
+          Our thinking
+        </span>
         <h2
-          className="text-2xl mb-6 text-center"
+          className="text-xl mb-6 text-center"
           style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: COLORS.ink }}
         >
           Why we priced it this way
         </h2>
-        <div className="flex flex-col gap-6" style={{ fontFamily: FONT_FAMILY.body, fontSize: "16px", lineHeight: 1.8, color: COLORS.ink }}>
+        <div className="flex flex-col gap-4" style={{ fontFamily: FONT_FAMILY.body, fontSize: "14px", lineHeight: 1.75, color: COLORS.inkMuted }}>
           <p>
             Good property advice has historically been reserved for people who could afford a financial
             advisor, or who happened to know someone in real estate willing to give it to them straight.

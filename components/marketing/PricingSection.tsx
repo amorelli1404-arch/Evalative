@@ -5,19 +5,19 @@ import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
 
 export default function PricingSection() {
   return (
-    <section id="pricing" className="w-full max-w-5xl mx-auto px-6 py-14 border-t" style={{ borderColor: COLORS.hairline }}>
-      <div className="flex flex-col items-center text-center mb-10">
+    <section id="pricing" className="w-full max-w-4xl mx-auto px-6 py-12 border-t" style={{ borderColor: COLORS.hairline }}>
+      <div className="flex flex-col items-center text-center mb-8">
         <span
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs uppercase tracking-wide mb-5"
-          style={{ borderColor: COLORS.gold, color: COLORS.ink, fontFamily: FONT_FAMILY.mono }}
+          className="text-[11px] uppercase block mb-3"
+          style={{ fontFamily: FONT_FAMILY.mono, color: COLORS.inkMuted, letterSpacing: "0.14em" }}
         >
-          <span style={{ color: COLORS.gold }}>●</span>
           Simple, honest pricing
         </span>
-        <h2 style={{ fontFamily: FONT_FAMILY.display, fontSize: "32px", fontWeight: 600, color: COLORS.ink }}>
+        <h2 style={{ fontFamily: FONT_FAMILY.display, fontSize: "24px", fontWeight: 600, color: COLORS.ink, lineHeight: 1.25 }}>
           Choose your plan
         </h2>
-        <p className="text-sm mt-3 max-w-md" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
+        <span className="block mt-4" style={{ width: "32px", height: "1px", backgroundColor: COLORS.gold }} />
+        <p className="text-[13px] mt-4 max-w-sm leading-relaxed" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
           Start free. Lock in founding member pricing for as long as you stay subscribed.
         </p>
       </div>
@@ -32,50 +32,56 @@ export default function PricingSection() {
             colorBackground: COLORS.paper,
             colorBorder: COLORS.hairline,
             fontFamily: FONT_FAMILY.body,
-            borderRadius: "20px",
-            spacingUnit: "0.85rem",
+            borderRadius: "3px",
+            spacingUnit: "0.75rem",
           },
           elements: {
             pricingTableCards: {
               display: "grid",
-              gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-              gap: "16px",
+              gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
+              gap: "12px",
               alignItems: "stretch",
             },
             pricingTableCard: {
               border: `1px solid ${COLORS.hairline}`,
+              borderRadius: "3px",
               boxShadow: "none",
-              padding: "18px",
+              padding: "14px",
               height: "100%",
             },
             pricingTableCardTitle: {
               fontFamily: FONT_FAMILY.display,
               fontWeight: 600,
-              fontSize: "16px",
+              fontSize: "15px",
               color: COLORS.ink,
             },
             pricingTableCardDescription: {
               fontFamily: FONT_FAMILY.body,
-              fontSize: "12px",
+              fontSize: "11.5px",
+              lineHeight: 1.5,
               color: COLORS.inkMuted,
             },
             pricingTableCardFee: {
-              fontFamily: FONT_FAMILY.mono,
-              fontSize: "24px",
+              fontFamily: FONT_FAMILY.display,
+              fontWeight: 600,
+              fontSize: "22px",
               color: COLORS.ink,
             },
             pricingTableCardFeaturesListItem: {
               fontFamily: FONT_FAMILY.body,
-              fontSize: "13px",
+              fontSize: "12px",
+              lineHeight: 1.5,
               color: COLORS.ink,
             },
             pricingTableCardFooterButton: {
               fontFamily: FONT_FAMILY.body,
-              fontWeight: 600,
-              fontSize: "13px",
-              borderRadius: "999px",
+              fontWeight: 500,
+              fontSize: "11px",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              borderRadius: "2px",
               boxShadow: "none",
-              padding: "10px",
+              padding: "9px",
             },
           },
         }}
