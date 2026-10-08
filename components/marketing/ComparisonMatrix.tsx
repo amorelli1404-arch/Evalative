@@ -49,15 +49,18 @@ export default function ComparisonMatrix() {
 
       <div className="overflow-x-auto -mx-6 px-6">
         <table className="w-full min-w-[640px] border-collapse" style={{ borderSpacing: 0 }}>
+          <caption className="sr-only">Feature comparison between free listing tools and Evalative</caption>
           <thead>
             <tr>
-              <th className="text-left align-bottom pb-3 pr-4 w-1/3" />
-              <th className="text-left align-bottom pb-3 px-4">
+              <th scope="col" className="text-left align-bottom pb-3 pr-4 w-1/3">
+                <span className="sr-only">Feature</span>
+              </th>
+              <th scope="col" className="text-left align-bottom pb-3 px-4 font-normal">
                 <span className="text-xs uppercase tracking-wide" style={{ fontFamily: FONT_FAMILY.mono, color: COLORS.inkMuted }}>
                   Free sites (Zillow, Redfin)
                 </span>
               </th>
-              <th className="text-left align-bottom pb-3 pl-4">
+              <th scope="col" className="text-left align-bottom pb-3 pl-4 font-normal">
                 <span
                   className="text-xs uppercase tracking-wide px-2 py-1 rounded-sm inline-block"
                   style={{ fontFamily: FONT_FAMILY.mono, backgroundColor: COLORS.ink, color: COLORS.goldSoft }}
@@ -70,11 +73,11 @@ export default function ComparisonMatrix() {
           <tbody>
             {ROWS.map((row, i) => (
               <tr key={row.feature} style={{ borderTop: `1px solid ${COLORS.hairline}` }}>
-                <td className="py-4 pr-4 align-top">
+                <th scope="row" className="py-4 pr-4 align-top text-left font-normal">
                   <span className="text-sm font-semibold" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.ink }}>
                     {row.feature}
                   </span>
-                </td>
+                </th>
                 <td className="py-4 px-4 align-top" style={{ backgroundColor: i % 2 === 0 ? "transparent" : "#FAFAF8" }}>
                   <div className="flex items-start gap-2 text-sm" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
                     <XIcon />

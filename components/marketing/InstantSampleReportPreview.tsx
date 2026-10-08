@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type KeyboardEvent } from "react";
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
 import SampleReportModal from "./SampleReportModal";
 
@@ -78,6 +78,7 @@ export default function InstantSampleReportPreview({ onGetStarted }: { onGetStar
   const [activeId, setActiveId] = useState<ScenarioId>("buying");
   const [transitioning, setTransitioning] = useState(false);
   const [pdfModalOpen, setPdfModalOpen] = useState(false);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const active = SCENARIOS.find((s) => s.id === activeId)!;
 
@@ -88,6 +89,19 @@ export default function InstantSampleReportPreview({ onGetStarted }: { onGetStar
       setActiveId(id);
       setTransitioning(false);
     }, 160);
+  };
+
+  // Standard tab keyboard behavior: arrow keys move between scenarios.
+  const handleTabKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let nextIndex: number;
+    if (e.key === "ArrowRight") nextIndex = (index + 1) % SCENARIOS.length;
+    else if (e.key === "ArrowLeft") nextIndex = (index - 1 + SCENARIOS.length) % SCENARIOS.length;
+    else if (e.key === "Home") nextIndex = 0;
+    else if (e.key === "End") nextIndex = SCENARIOS.length - 1;
+    else return;
+    e.preventDefault();
+    handleTabChange(SCENARIOS[nextIndex].id);
+    tabRefs.current[nextIndex]?.focus();
   };
 
   return (
@@ -113,12 +127,19 @@ export default function InstantSampleReportPreview({ onGetStarted }: { onGetStar
         role="tablist"
         aria-label="Choose a scenario"
       >
-        {SCENARIOS.map((s) => (
+        {SCENARIOS.map((s, i) => (
           <button
             key={s.id}
+            ref={(el) => {
+              tabRefs.current[i] = el;
+            }}
+            id={`scenario-tab-${s.id}`}
             role="tab"
             aria-selected={activeId === s.id}
+            aria-controls="scenario-panel"
+            tabIndex={activeId === s.id ? 0 : -1}
             onClick={() => handleTabChange(s.id)}
+            onKeyDown={(e) => handleTabKeyDown(e, i)}
             className="px-3 py-2.5 rounded-sm text-xs sm:text-sm font-semibold uppercase tracking-wide transition-all duration-200"
             style={{
               fontFamily: FONT_FAMILY.body,
@@ -134,6 +155,10 @@ export default function InstantSampleReportPreview({ onGetStarted }: { onGetStar
       </div>
 
       <div
+        id="scenario-panel"
+        role="tabpanel"
+        aria-labelledby={`scenario-tab-${activeId}`}
+        tabIndex={0}
         className="w-full rounded-sm overflow-hidden transition-all duration-200 ease-in-out"
         style={{
           border: `1px solid ${COLORS.hairline}`,
