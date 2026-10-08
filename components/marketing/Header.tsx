@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
 
@@ -31,6 +32,7 @@ function SignUpCTA({ onClick }: { onClick?: () => void }) {
 export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean }) {
   const [scrolled, setScrolled] = useState(alwaysSolid);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (alwaysSolid) return;
@@ -58,15 +60,16 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
       }}
     >
       <div className="flex items-center justify-between px-6 md:px-10 py-5">
-        <Link href="/" style={{ fontFamily: FONT_FAMILY.display, fontSize: "22px", fontWeight: 600, color: textColor, letterSpacing: "0.02em" }}>
+        <Link href="/" aria-label="Evalative home" style={{ fontFamily: FONT_FAMILY.display, fontSize: "22px", fontWeight: 600, color: textColor, letterSpacing: "0.02em" }}>
           Evalative
         </Link>
 
-        <nav className="hidden md:flex items-center gap-10">
+        <nav aria-label="Main navigation" className="hidden md:flex items-center gap-10">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
+              aria-current={pathname === link.href ? "page" : undefined}
               className="text-sm uppercase tracking-wide transition-colors"
               style={{ fontFamily: FONT_FAMILY.body, color: textColor, letterSpacing: "0.08em" }}
             >
@@ -106,6 +109,8 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
         <button
           className="md:hidden flex flex-col gap-[5px] p-2"
           aria-label="Toggle menu"
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-menu"
           onClick={() => setMobileMenuOpen((v) => !v)}
         >
           <span style={{ width: "22px", height: "2px", backgroundColor: textColor }} />
@@ -115,11 +120,12 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden px-6 pb-6 flex flex-col gap-4" style={{ backgroundColor: "#FFFFFF" }}>
+        <nav id="mobile-menu" aria-label="Main navigation" className="md:hidden px-6 pb-6 flex flex-col gap-4" style={{ backgroundColor: "#FFFFFF" }}>
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
+              aria-current={pathname === link.href ? "page" : undefined}
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm uppercase tracking-wide py-2"
               style={{ fontFamily: FONT_FAMILY.body, color: COLORS.ink, letterSpacing: "0.08em" }}
@@ -149,7 +155,7 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
               </span>
             </div>
           </SignedIn>
-        </div>
+        </nav>
       )}
     </header>
   );

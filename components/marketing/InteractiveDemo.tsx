@@ -45,25 +45,37 @@ const InteractiveDemo = forwardRef<HTMLDivElement>(function InteractiveDemo(_pro
 
       <div className="flex flex-col items-center">
         {step === "address" && (
-          <div className="w-full max-w-md rounded-sm border p-6" style={{ backgroundColor: "white", borderColor: COLORS.hairline }}>
-            <h3 className="text-lg mb-1" style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: COLORS.ink }}>
+          <form
+            aria-labelledby="demo-address-heading"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleAddressSubmit();
+            }}
+            className="w-full max-w-md rounded-sm border p-6"
+            style={{ backgroundColor: "white", borderColor: COLORS.hairline }}
+          >
+            <h3 id="demo-address-heading" className="text-lg mb-1" style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: COLORS.ink }}>
               Let&apos;s take a look at your property
             </h3>
             <p className="text-sm mb-5" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
               We&apos;ll pull public records automatically — just enter the address.
             </p>
             <div className="flex flex-col gap-3 mb-5">
-              <input placeholder="Street address" value={address.line1} onChange={(e) => setAddress({ ...address, line1: e.target.value })} className="w-full px-3 py-2 rounded-sm border text-sm" style={{ borderColor: COLORS.hairline }} />
+              <label htmlFor="demo-address-line1" className="sr-only">Street address</label>
+              <input id="demo-address-line1" name="address-line1" type="text" required autoComplete="address-line1" placeholder="Street address" value={address.line1} onChange={(e) => setAddress({ ...address, line1: e.target.value })} className="w-full px-3 py-2 rounded-sm border text-sm" style={{ borderColor: COLORS.hairline }} />
               <div className="flex gap-2">
-                <input placeholder="City" value={address.city} onChange={(e) => setAddress({ ...address, city: e.target.value })} className="flex-1 px-3 py-2 rounded-sm border text-sm" style={{ borderColor: COLORS.hairline }} />
-                <input placeholder="State" maxLength={2} value={address.state} onChange={(e) => setAddress({ ...address, state: e.target.value.toUpperCase() })} className="w-16 px-3 py-2 rounded-sm border text-sm" style={{ borderColor: COLORS.hairline }} />
-                <input placeholder="ZIP" value={address.zip} onChange={(e) => setAddress({ ...address, zip: e.target.value })} className="w-24 px-3 py-2 rounded-sm border text-sm" style={{ borderColor: COLORS.hairline }} />
+                <label htmlFor="demo-address-city" className="sr-only">City</label>
+                <input id="demo-address-city" name="city" type="text" required autoComplete="address-level2" placeholder="City" value={address.city} onChange={(e) => setAddress({ ...address, city: e.target.value })} className="flex-1 px-3 py-2 rounded-sm border text-sm" style={{ borderColor: COLORS.hairline }} />
+                <label htmlFor="demo-address-state" className="sr-only">State</label>
+                <input id="demo-address-state" name="state" type="text" required autoComplete="address-level1" placeholder="State" maxLength={2} value={address.state} onChange={(e) => setAddress({ ...address, state: e.target.value.toUpperCase() })} className="w-16 px-3 py-2 rounded-sm border text-sm" style={{ borderColor: COLORS.hairline }} />
+                <label htmlFor="demo-address-zip" className="sr-only">ZIP code</label>
+                <input id="demo-address-zip" name="zip" type="text" required inputMode="numeric" autoComplete="postal-code" placeholder="ZIP" value={address.zip} onChange={(e) => setAddress({ ...address, zip: e.target.value })} className="w-24 px-3 py-2 rounded-sm border text-sm" style={{ borderColor: COLORS.hairline }} />
               </div>
             </div>
-            <button onClick={handleAddressSubmit} className="w-full py-2 rounded-sm text-sm font-medium" style={{ backgroundColor: COLORS.ink, color: COLORS.paper }}>
+            <button type="submit" className="w-full py-2 rounded-sm text-sm font-medium" style={{ backgroundColor: COLORS.ink, color: COLORS.paper }}>
               Continue
             </button>
-          </div>
+          </form>
         )}
 
         {step === "wizard" && <ConditionWizard onComplete={handleWizardComplete} />}

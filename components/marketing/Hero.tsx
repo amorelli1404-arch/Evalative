@@ -21,7 +21,7 @@ export default function Hero({ onGetStarted }: { onGetStarted: (address: string,
   const [scenario, setScenario] = useState(SCENARIOS[0].value);
 
   return (
-    <PhotoCarousel slides={SLIDES} minHeight="100vh" overlayStrength="medium" slideDurationMs={6500}>
+    <PhotoCarousel slides={SLIDES} minHeight="100vh" overlayStrength="medium" slideDurationMs={6500} priority>
       <div className="max-w-3xl mx-auto px-6 flex flex-col items-center text-center" style={{ paddingTop: "140px", paddingBottom: "80px" }}>
         <h1
           className="text-5xl sm:text-6xl leading-tight mb-6"
@@ -34,15 +34,25 @@ export default function Hero({ onGetStarted }: { onGetStarted: (address: string,
           lender, or commission behind the numbers.
         </p>
 
-        <div
+        <form
+          role="search"
+          aria-label="Evaluate a property"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onGetStarted(address, scenario);
+          }}
           className="w-full max-w-2xl flex flex-col sm:flex-row items-stretch rounded-sm overflow-hidden"
           style={{ backgroundColor: "#FFFFFF", boxShadow: "0 12px 40px rgba(0,0,0,0.25)" }}
         >
           <div className="flex-1 px-5 py-4 sm:border-r" style={{ borderColor: COLORS.hairline }}>
-            <label className="block text-[10px] uppercase tracking-wide mb-1" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted, letterSpacing: "0.08em" }}>
+            <label htmlFor="hero-address" className="block text-[10px] uppercase tracking-wide mb-1" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted, letterSpacing: "0.08em" }}>
               Address
             </label>
             <input
+              id="hero-address"
+              name="address"
+              type="text"
+              autoComplete="street-address"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="123 Maple St, Springfield"
@@ -51,10 +61,12 @@ export default function Hero({ onGetStarted }: { onGetStarted: (address: string,
             />
           </div>
           <div className="flex-1 px-5 py-4 sm:border-r" style={{ borderColor: COLORS.hairline }}>
-            <label className="block text-[10px] uppercase tracking-wide mb-1" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted, letterSpacing: "0.08em" }}>
+            <label htmlFor="hero-scenario" className="block text-[10px] uppercase tracking-wide mb-1" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted, letterSpacing: "0.08em" }}>
               Scenario
             </label>
             <select
+              id="hero-scenario"
+              name="scenario"
               value={scenario}
               onChange={(e) => setScenario(e.target.value)}
               className="w-full text-sm outline-none bg-transparent"
@@ -66,13 +78,13 @@ export default function Hero({ onGetStarted }: { onGetStarted: (address: string,
             </select>
           </div>
           <button
-            onClick={() => onGetStarted(address, scenario)}
+            type="submit"
             className="px-8 py-4 text-sm uppercase tracking-wide font-medium"
             style={{ fontFamily: FONT_FAMILY.body, backgroundColor: COLORS.gold, color: "#1A1A1A", letterSpacing: "0.08em" }}
           >
             Evaluate
           </button>
-        </div>
+        </form>
         <span className="mt-4 text-xs" style={{ fontFamily: FONT_FAMILY.mono, color: "#D8D8D8" }}>
           No account needed to try it
         </span>

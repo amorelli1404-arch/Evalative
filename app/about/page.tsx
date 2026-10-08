@@ -17,7 +17,7 @@ export default function AboutPage() {
     <main style={{ backgroundColor: COLORS.paper, minHeight: "100vh" }} className="flex flex-col items-center">
       <Header />
 
-      <PhotoCarousel slides={SLIDES} minHeight="420px" overlayStrength="medium">
+      <PhotoCarousel slides={SLIDES} minHeight="420px" overlayStrength="medium" priority>
         <div className="max-w-2xl mx-auto px-6 py-24 flex flex-col items-center text-center">
           <span className="text-xs uppercase tracking-wide mb-3" style={{ fontFamily: FONT_FAMILY.mono, color: "#E4E2D8" }}>
             About Evalative

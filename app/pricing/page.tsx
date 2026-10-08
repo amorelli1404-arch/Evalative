@@ -49,7 +49,7 @@ export default function PricingPage() {
     <main style={{ backgroundColor: COLORS.paper, minHeight: "100vh" }} className="flex flex-col items-center">
       <Header />
 
-      <PhotoCarousel slides={SLIDES} minHeight="280px" overlayStrength="medium">
+      <PhotoCarousel slides={SLIDES} minHeight="280px" overlayStrength="medium" priority>
         <div className="max-w-xl mx-auto px-6 pt-24 pb-14 flex flex-col items-center text-center">
           <span className="text-[11px] uppercase mb-3" style={{ fontFamily: FONT_FAMILY.mono, color: "#E4E2D8", letterSpacing: "0.14em" }}>
             Pricing

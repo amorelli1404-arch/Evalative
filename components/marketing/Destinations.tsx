@@ -41,7 +41,7 @@ export default function Destinations() {
       <div className="grid sm:grid-cols-3 gap-6">
         {DESTINATIONS.map((d) => (
           <div key={d.label} className="relative overflow-hidden rounded-sm" style={{ aspectRatio: "3 / 4" }}>
-            <img src={d.imageUrl} alt={d.imageAlt} className="absolute inset-0 w-full h-full object-cover" />
+            <img src={d.imageUrl} alt={d.imageAlt} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
             <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.75) 100%)" }} />
             <div className="absolute inset-0 flex items-end justify-center pb-6">
               <span

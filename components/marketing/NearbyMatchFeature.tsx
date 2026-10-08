@@ -68,7 +68,7 @@ export default function NearbyMatchFeature({ onSeePricing }: { onSeePricing: () 
         </div>
 
         <div className="rounded-sm overflow-hidden" style={{ border: `1px solid ${COLORS.hairline}` }}>
-          <PhotoCarousel slides={SLIDES} minHeight="360px" overlayStrength="light" slideDurationMs={5000}>
+          <PhotoCarousel slides={SLIDES} minHeight="360px" overlayStrength="light" slideDurationMs={5000} sizes="(min-width: 768px) 50vw, 100vw">
             <div />
           </PhotoCarousel>
         </div>
