@@ -4,8 +4,17 @@ import { useState } from "react";
 import { COLORS, FONT_FAMILY } from "../lib/design-tokens";
 import type { ConditionSurveyAnswers } from "../lib/types";
 
+type Goal = ConditionSurveyAnswers["primary_goal"];
+
 interface ConditionWizardProps {
   onComplete: (answers: ConditionSurveyAnswers) => void;
+  initialGoal?: Goal; // set when the visitor already picked a scenario in the hero
+}
+
+interface WizardStep {
+  key: "primary_goal" | "occupancy_type" | "kitchen_condition";
+  question: string;
+  options: { value: string; label: string }[];
 }
 
 const CONDITION_OPTIONS = [
@@ -24,6 +33,17 @@ const GOAL_OPTIONS = [
   { value: "sell_vs_rent", label: "Deciding whether to sell or rent it out" },
   { value: "rent_vs_buy", label: "Deciding whether to buy" },
 ];
+
+const GOAL_STEP: WizardStep = { key: "primary_goal", question: "What are you trying to figure out?", options: GOAL_OPTIONS };
+const OCCUPANCY_STEP: WizardStep = { key: "occupancy_type", question: "What's your relationship to this property?", options: OCCUPANCY_OPTIONS };
+const KITCHEN_STEP: WizardStep = { key: "kitchen_condition", question: "When was the kitchen last updated?", options: CONDITION_OPTIONS };
+
+// The kitchen question only matters for a renovation verdict, so the sell
+// and buy paths finish one question sooner.
+function stepsForGoal(goal: Goal): WizardStep[] {
+  if (goal === "sell_vs_rent" || goal === "rent_vs_buy") return [GOAL_STEP, OCCUPANCY_STEP];
+  return [GOAL_STEP, OCCUPANCY_STEP, KITCHEN_STEP];
+}
 
 function ChoiceList({ options, selected, onSelect }: { options: { value: string; label: string }[]; selected: string | null; onSelect: (v: string) => void }) {
   return (
@@ -50,30 +70,25 @@ function ChoiceList({ options, selected, onSelect }: { options: { value: string;
   );
 }
 
-export default function ConditionWizard({ onComplete }: ConditionWizardProps) {
+export default function ConditionWizard({ onComplete, initialGoal = null }: ConditionWizardProps) {
   const [answers, setAnswers] = useState<ConditionSurveyAnswers>({
     kitchen_condition: null,
     bathroom_condition: null,
     roof_age_years: null,
     hvac_age_years: null,
     occupancy_type: null,
-    primary_goal: null,
+    primary_goal: initialGoal,
   });
-  const [stepIndex, setStepIndex] = useState(0);
+  const [stepIndex, setStepIndex] = useState(initialGoal ? 1 : 0);
 
-  const steps = [
-    { key: "primary_goal" as const, question: "What are you trying to figure out?", options: GOAL_OPTIONS },
-    { key: "occupancy_type" as const, question: "What's your relationship to this property?", options: OCCUPANCY_OPTIONS },
-    { key: "kitchen_condition" as const, question: "When was the kitchen last updated?", options: CONDITION_OPTIONS },
-  ];
-
-  const currentStep = steps[stepIndex];
-  const isLastStep = stepIndex === steps.length - 1;
+  const steps = stepsForGoal(answers.primary_goal);
+  const currentStep = steps[Math.min(stepIndex, steps.length - 1)];
 
   const handleSelect = (value: string) => {
     const updated = { ...answers, [currentStep.key]: value } as ConditionSurveyAnswers;
     setAnswers(updated);
-    if (isLastStep) {
+    const updatedSteps = stepsForGoal(updated.primary_goal);
+    if (stepIndex >= updatedSteps.length - 1) {
       onComplete(updated);
     } else {
       setStepIndex((i) => i + 1);
@@ -88,7 +103,7 @@ export default function ConditionWizard({ onComplete }: ConditionWizardProps) {
         ))}
       </div>
       <span className="text-[11px] uppercase tracking-wide block mb-2" style={{ fontFamily: FONT_FAMILY.mono, color: COLORS.inkMuted }}>
-        Question {stepIndex + 1} of {steps.length}
+        Question {Math.min(stepIndex, steps.length - 1) + 1} of {steps.length}
       </span>
       <h2 className="text-[18px] mb-5" style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: COLORS.ink }}>
         {currentStep.question}

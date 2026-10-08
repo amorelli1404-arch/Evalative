@@ -47,9 +47,17 @@ export default function PremiumDashboard({ tier }: { tier: DashboardTier }) {
           {tier === "max" ? "Max plan" : "Pro plan"}
         </span>
       </div>
-      <h1 className="text-3xl mb-8" style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: COLORS.ink }}>
+      <h1 className="text-3xl mb-4" style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: COLORS.ink }}>
         Deep-dive dashboard
       </h1>
+
+      <div className="mb-8 rounded-sm px-4 py-3 border" style={{ borderColor: COLORS.hairline, backgroundColor: COLORS.slateSoft }}>
+        <p className="text-xs leading-relaxed" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.ink }}>
+          <strong>Sample data.</strong> Comparable sales, price trends, neighborhood scores and rate history
+          shown here are examples, not figures for your property. The calculators run on whatever numbers
+          you enter.
+        </p>
+      </div>
 
       <div className="flex flex-wrap gap-1 mb-8 border-b" style={{ borderColor: COLORS.hairline }}>
         {tabs.map((tab) => (

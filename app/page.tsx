@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Header from "../components/marketing/Header";
 import Hero from "../components/marketing/Hero";
 import InstantSampleReportPreview from "../components/marketing/InstantSampleReportPreview";
@@ -11,13 +11,13 @@ import ValueProps from "../components/marketing/ValueProps";
 import NearbyMatchFeature from "../components/marketing/NearbyMatchFeature";
 import FoundingOffer from "../components/marketing/FoundingOffer";
 import ComparisonMatrix from "../components/marketing/ComparisonMatrix";
-import SocialProof from "../components/marketing/SocialProof";
 import PricingSection from "../components/marketing/PricingSection";
-import InteractiveDemo from "../components/marketing/InteractiveDemo";
+import InteractiveDemo, { type DemoPrefill } from "../components/marketing/InteractiveDemo";
 import Footer from "../components/marketing/Footer";
 
 export default function HomePage() {
   const demoRef = useRef<HTMLDivElement>(null);
+  const [demoPrefill, setDemoPrefill] = useState<DemoPrefill | null>(null);
 
   const scrollToDemo = () => demoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   const scrollToPricing = () => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -25,7 +25,12 @@ export default function HomePage() {
   return (
     <main style={{ backgroundColor: "#FFFFFF", minHeight: "100vh" }} className="flex flex-col items-center">
       <Header />
-      <Hero onGetStarted={() => scrollToDemo()} />
+      <Hero
+        onGetStarted={(address, scenario) => {
+          setDemoPrefill({ address, scenario });
+          scrollToDemo();
+        }}
+      />
       <InstantSampleReportPreview onGetStarted={scrollToDemo} />
       <Methodology />
       <SampleEvaluations onExploreAll={scrollToDemo} />
@@ -34,9 +39,11 @@ export default function HomePage() {
       <NearbyMatchFeature onSeePricing={scrollToPricing} />
       <FoundingOffer onSeePricing={scrollToPricing} />
       <ComparisonMatrix />
-      <SocialProof />
+      {/* SocialProof is intentionally not rendered: its testimonials, usage
+          count and endorsement are placeholders. Add it back once
+          components/marketing/SocialProof.tsx holds real ones. */}
       <PricingSection />
-      <InteractiveDemo ref={demoRef} />
+      <InteractiveDemo ref={demoRef} prefill={demoPrefill} />
       <Footer />
     </main>
   );

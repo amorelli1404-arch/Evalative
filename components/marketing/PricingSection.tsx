@@ -41,6 +41,7 @@ export default function PricingSection() {
         </div>
 
         <PricingTable
+          newSubscriptionRedirectUrl="/dashboard"
           appearance={{
             variables: {
               colorPrimary: COLORS.ink,

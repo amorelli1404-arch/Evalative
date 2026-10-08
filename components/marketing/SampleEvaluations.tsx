@@ -82,15 +82,6 @@ export default function SampleEvaluations({ onExploreAll }: { onExploreAll: () =
                 decoding="async"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <button
-                aria-label="Save"
-                className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: "rgba(255,255,255,0.9)" }}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="1.5">
-                  <path d="M12 21s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11z" />
-                </svg>
-              </button>
               <span
                 className="absolute bottom-3 left-3 text-[10px] uppercase tracking-wide px-2 py-1 rounded-sm"
                 style={{ backgroundColor: "rgba(26,26,26,0.75)", color: "#FFFFFF", fontFamily: FONT_FAMILY.body, letterSpacing: "0.06em" }}

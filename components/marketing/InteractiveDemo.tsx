@@ -1,28 +1,51 @@
 "use client";
 
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import ConditionWizard from "../ConditionWizard";
 import DisclaimerBanner from "../legal/DisclaimerBanner";
-import { computeMockEvaluation } from "../../lib/mockEvaluation";
+import { computeMockCapitalEvaluation, computeMockEvaluation } from "../../lib/mockEvaluation";
 import { COLORS, FONT_FAMILY, SENTIMENT_STYLE, VERDICT_SENTIMENT } from "../../lib/design-tokens";
 import type { ConditionSurveyAnswers } from "../../lib/types";
 
 type Step = "address" | "wizard" | "loading" | "dashboard";
+type Goal = NonNullable<ConditionSurveyAnswers["primary_goal"]>;
 
-const InteractiveDemo = forwardRef<HTMLDivElement>(function InteractiveDemo(_props, ref) {
+const GOALS: Goal[] = ["renovation_evaluation", "sell_vs_rent", "rent_vs_buy"];
+const EMPTY_ADDRESS = { line1: "", city: "", state: "", zip: "" };
+
+// What the hero search box hands over, so the visitor doesn't retype it.
+export interface DemoPrefill {
+  address: string;
+  scenario: string;
+}
+
+const InteractiveDemo = forwardRef<HTMLDivElement, { prefill?: DemoPrefill | null }>(function InteractiveDemo({ prefill }, ref) {
   const [step, setStep] = useState<Step>("address");
-  const [address, setAddress] = useState({ line1: "", city: "", state: "", zip: "" });
+  const [address, setAddress] = useState(EMPTY_ADDRESS);
+  const [initialGoal, setInitialGoal] = useState<Goal | null>(null);
   const [{ evaluation, card }, setResult] = useState(() => computeMockEvaluation("minor_kitchen_remodel"));
+
+  useEffect(() => {
+    if (!prefill) return;
+    setAddress({ ...EMPTY_ADDRESS, line1: prefill.address });
+    setInitialGoal(GOALS.indexOf(prefill.scenario as Goal) === -1 ? null : (prefill.scenario as Goal));
+    setStep("address");
+  }, [prefill]);
 
   const handleAddressSubmit = () => {
     if (address.line1 && address.city && address.state && address.zip) setStep("wizard");
   };
 
   const handleWizardComplete = (answers: ConditionSurveyAnswers) => {
-    const category = answers.kitchen_condition === "never_updated" ? "major_kitchen_remodel" : "minor_kitchen_remodel";
+    const goal = answers.primary_goal;
     setStep("loading");
     setTimeout(() => {
-      setResult(computeMockEvaluation(category));
+      if (goal === "sell_vs_rent" || goal === "rent_vs_buy") {
+        setResult(computeMockCapitalEvaluation(goal));
+      } else {
+        const category = answers.kitchen_condition === "never_updated" ? "major_kitchen_remodel" : "minor_kitchen_remodel";
+        setResult(computeMockEvaluation(category));
+      }
       setStep("dashboard");
     }, 900);
   };
@@ -78,7 +101,7 @@ const InteractiveDemo = forwardRef<HTMLDivElement>(function InteractiveDemo(_pro
           </form>
         )}
 
-        {step === "wizard" && <ConditionWizard onComplete={handleWizardComplete} />}
+        {step === "wizard" && <ConditionWizard onComplete={handleWizardComplete} initialGoal={initialGoal} />}
 
         {step === "loading" && (
           <div className="flex flex-col items-center gap-3 py-16">
@@ -100,7 +123,7 @@ const InteractiveDemo = forwardRef<HTMLDivElement>(function InteractiveDemo(_pro
               </div>
               <p className="text-sm mb-4" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.ink }}>{card.reason_text}</p>
               <p className="text-sm mb-4" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>Next: {card.next_step}</p>
-              <button onClick={() => { setAddress({ line1: "", city: "", state: "", zip: "" }); setStep("address"); }} className="text-sm underline" style={{ color: COLORS.inkMuted }}>
+              <button onClick={() => { setAddress(EMPTY_ADDRESS); setInitialGoal(null); setStep("address"); }} className="text-sm underline" style={{ color: COLORS.inkMuted }}>
                 Start over
               </button>
               <div className="mt-4">

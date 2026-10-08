@@ -8,9 +8,19 @@ const playfair = Playfair_Display({ subsets: ["latin"], weight: ["500", "600", "
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-montserrat", display: "swap" });
 const plexMono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plex-mono", display: "swap" });
 
+const SITE_TITLE = "Evalative — Independent Property Evaluations";
+const SITE_DESCRIPTION = "Independent, data-driven evaluations of your property decisions.";
+
 export const metadata: Metadata = {
-  title: "Evalative — Independent Property Evaluations",
-  description: "Independent, data-driven evaluations of your property decisions.",
+  title: { default: SITE_TITLE, template: "%s — Evalative" },
+  description: SITE_DESCRIPTION,
+  icons: { icon: "/logo.png" },
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    siteName: "Evalative",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

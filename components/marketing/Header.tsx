@@ -79,12 +79,6 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
         </nav>
 
         <div className="hidden md:flex items-center gap-6">
-          <button aria-label="Language selector" style={{ color: textColor }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z" />
-            </svg>
-          </button>
           <SignedOut>
             <SignInButton mode="modal">
               <button
@@ -102,6 +96,14 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
             <SignUpCTA />
           </SignedOut>
           <SignedIn>
+            <Link
+              href="/dashboard"
+              aria-current={pathname === "/dashboard" ? "page" : undefined}
+              className="text-sm uppercase tracking-wide transition-colors"
+              style={{ fontFamily: FONT_FAMILY.body, color: textColor, letterSpacing: "0.08em" }}
+            >
+              Dashboard
+            </Link>
             <UserButton afterSignOutUrl="/" />
           </SignedIn>
         </div>
@@ -148,6 +150,15 @@ export default function Header({ alwaysSolid = false }: { alwaysSolid?: boolean 
             </div>
           </SignedOut>
           <SignedIn>
+            <Link
+              href="/dashboard"
+              aria-current={pathname === "/dashboard" ? "page" : undefined}
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm uppercase tracking-wide py-2"
+              style={{ fontFamily: FONT_FAMILY.body, color: COLORS.ink, letterSpacing: "0.08em" }}
+            >
+              Dashboard
+            </Link>
             <div className="flex items-center gap-3">
               <UserButton afterSignOutUrl="/" />
               <span className="text-sm" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.ink }}>

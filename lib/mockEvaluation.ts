@@ -1,4 +1,5 @@
 import type { EvaluationOutput, FormattedCard, ComparableSale } from "./types";
+import { calculateRentVsBuy, calculateSellVsRent, type CapitalDecisionInputs } from "./premiumTypes";
 
 const NATIONAL_BASELINE_COST: Record<string, number> = {
   minor_kitchen_remodel: 28000,
@@ -60,6 +61,87 @@ export function computeMockEvaluation(
     number_line: `Est. $${valueAdded.toLocaleString()} value added vs. $${cost.toLocaleString()} cost (${roiPercent}% return)`,
     reason_text: reasonText,
     next_step: roiPercent >= 100 ? "Get 2-3 contractor quotes now to lock in current pricing." : "Revisit this evaluation after finishing higher-return projects first.",
+    source_evaluation_calculation_version: "demo-1.0.0",
+    ai_model_version: "demo_mock::no_llm",
+    numeric_validation_passed: true,
+  };
+
+  return { evaluation, card };
+}
+
+// Same sample assumptions the Max dashboard's Capital Decision Engine opens
+// with, so the homepage demo and the dashboard tell one consistent story.
+const SAMPLE_CAPITAL_INPUTS: CapitalDecisionInputs = {
+  homeValue: 425000,
+  monthlyRent: 2400,
+  monthlyOwnCost: 2850,
+  annualAppreciationPercent: 4.2,
+  holdingYears: 7,
+  sellingCostPercent: 7,
+};
+
+const CAPITAL_VERDICT_COPY: Record<
+  "sell" | "rent_out" | "buy" | "continue_renting",
+  { verdictLine: string; numberSuffix: string; keyDriver: string; nextStep: string }
+> = {
+  sell: {
+    verdictLine: "🟡 Selling looks favorable",
+    numberSuffix: "ahead by selling and reinvesting",
+    keyDriver: "reinvested_sale_proceeds_outperform_rental_path",
+    nextStep: "Ask 2-3 local agents for a listing-price opinion before you decide.",
+  },
+  rent_out: {
+    verdictLine: "🟢 Renting it out looks favorable",
+    numberSuffix: "ahead by renting it out",
+    keyDriver: "rental_cash_flow_plus_appreciation_favors_holding",
+    nextStep: "Get a rental estimate from a local property manager to confirm the rent assumption.",
+  },
+  buy: {
+    verdictLine: "🟢 Buying looks favorable",
+    numberSuffix: "ahead by buying",
+    keyDriver: "buying_total_cost_favorable_over_holding_period",
+    nextStep: "Get pre-approved so you know your real rate before making an offer.",
+  },
+  continue_renting: {
+    verdictLine: "🟡 Renting looks favorable for now",
+    numberSuffix: "ahead by continuing to rent",
+    keyDriver: "renting_total_cost_favorable_or_comparable",
+    nextStep: "Revisit this evaluation when rates or local prices move.",
+  },
+};
+
+export function computeMockCapitalEvaluation(
+  goal: "sell_vs_rent" | "rent_vs_buy"
+): { evaluation: EvaluationOutput; card: FormattedCard } {
+  const result = goal === "sell_vs_rent" ? calculateSellVsRent(SAMPLE_CAPITAL_INPUTS) : calculateRentVsBuy(SAMPLE_CAPITAL_INPUTS);
+
+  let verdict: "sell" | "rent_out" | "buy" | "continue_renting";
+  if (goal === "sell_vs_rent") {
+    verdict = result.recommendedAction === "Rent it out" ? "rent_out" : "sell";
+  } else {
+    verdict = result.recommendedAction === "Buy" ? "buy" : "continue_renting";
+  }
+  const copy = CAPITAL_VERDICT_COPY[verdict];
+
+  const evaluation: EvaluationOutput = {
+    scenario_type: goal,
+    verdict,
+    confidence_score: result.confidenceScore / 100,
+    roi_percent: null,
+    cost_estimate: null,
+    value_added: result.netAdvantage,
+    key_driver: copy.keyDriver,
+    data_freshness_days: 0,
+    breakeven_years: null,
+    projected_value_at_holding_period: null,
+    calculation_version: "demo-1.0.0",
+  };
+
+  const card: FormattedCard = {
+    verdict_line: copy.verdictLine,
+    number_line: `Est. $${result.netAdvantage.toLocaleString()} ${copy.numberSuffix} over ${SAMPLE_CAPITAL_INPUTS.holdingYears} years`,
+    reason_text: result.reasoning,
+    next_step: copy.nextStep,
     source_evaluation_calculation_version: "demo-1.0.0",
     ai_model_version: "demo_mock::no_llm",
     numeric_validation_passed: true,
