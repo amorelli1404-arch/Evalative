@@ -74,6 +74,13 @@ export default function PricingSection() {
                   transform: "translateY(-2px)",
                 },
               },
+              // Clerk tags each card with its plan slug -- lift the Max card
+              // so the top tier reads as the premium option at a glance.
+              pricingTableCard__max: {
+                borderColor: COLORS.gold,
+                borderTop: `2px solid ${COLORS.gold}`,
+                boxShadow: "0 18px 40px rgba(168,123,46,0.14)",
+              },
               pricingTableCardHeader: {
                 background: `linear-gradient(180deg, ${WARM_WASH} 0%, ${COLORS.paper} 100%)`,
                 borderBottom: `1px solid ${COLORS.hairline}`,

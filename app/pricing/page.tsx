@@ -5,6 +5,7 @@ import Header from "../../components/marketing/Header";
 import Footer from "../../components/marketing/Footer";
 import PhotoCarousel, { type CarouselSlide } from "../../components/marketing/PhotoCarousel";
 import PricingSection from "../../components/marketing/PricingSection";
+import PlanHighlights from "../../components/marketing/PlanHighlights";
 import TrustBadges from "../../components/marketing/TrustBadges";
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
 
@@ -61,6 +62,8 @@ export default function PricingPage() {
       </PhotoCarousel>
 
       <PricingSection />
+
+      <PlanHighlights />
 
       {/* Reassurance strip */}
       <div className="w-full max-w-4xl px-6 pt-2 pb-12 flex flex-col items-center gap-5">
