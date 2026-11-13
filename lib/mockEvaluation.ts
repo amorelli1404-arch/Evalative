@@ -1,5 +1,11 @@
-import type { EvaluationOutput, FormattedCard, ComparableSale } from "./types";
-import { calculateRentVsBuy, calculateSellVsRent, type CapitalDecisionInputs } from "./premiumTypes";
+import type { EvaluationOutput, FormattedCard } from "./types";
+import {
+  calculateRentVsBuy,
+  calculateSellVsRent,
+  toCapitalInputs,
+  DEFAULT_ASSUMPTIONS,
+  type CapitalDecisionInputs,
+} from "./premiumTypes";
 
 const NATIONAL_BASELINE_COST: Record<string, number> = {
   minor_kitchen_remodel: 28000,
@@ -69,16 +75,9 @@ export function computeMockEvaluation(
   return { evaluation, card };
 }
 
-// Same sample assumptions the Max dashboard's Capital Decision Engine opens
-// with, so the homepage demo and the dashboard tell one consistent story.
-const SAMPLE_CAPITAL_INPUTS: CapitalDecisionInputs = {
-  homeValue: 425000,
-  monthlyRent: 2400,
-  monthlyOwnCost: 2850,
-  annualAppreciationPercent: 4.2,
-  holdingYears: 7,
-  sellingCostPercent: 7,
-};
+// Same sample assumptions the dashboard opens with, so the homepage demo
+// and the dashboard tell one consistent story.
+const SAMPLE_CAPITAL_INPUTS: CapitalDecisionInputs = toCapitalInputs(DEFAULT_ASSUMPTIONS);
 
 const CAPITAL_VERDICT_COPY: Record<
   "sell" | "rent_out" | "buy" | "continue_renting",
@@ -149,9 +148,3 @@ export function computeMockCapitalEvaluation(
 
   return { evaluation, card };
 }
-
-export const MOCK_COMPARABLE_SALES: ComparableSale[] = [
-  { address_label: "0.2 mi away", sale_price: 612000, sale_date: "2026-06-12", living_area_sqft: 1850, distance_miles: 0.2 },
-  { address_label: "0.4 mi away", sale_price: 598000, sale_date: "2026-05-28", living_area_sqft: 1780, distance_miles: 0.4 },
-  { address_label: "0.3 mi away", sale_price: 634000, sale_date: "2026-05-15", living_area_sqft: 1920, distance_miles: 0.3 },
-];

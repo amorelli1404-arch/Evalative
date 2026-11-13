@@ -82,6 +82,8 @@ export function calculateFinancing(inputs: FinancingInputs): FinancingOutput {
   };
 }
 
+export const PROJECT_TYPES: ProjectType[] = ["kitchen", "bathroom", "addition", "curb_appeal"];
+
 export const NATIONAL_ROI_BY_PROJECT: Record<ProjectType, { label: string; recoupRate: number; baselineCost: number }> = {
   kitchen: { label: "Kitchen Remodel", recoupRate: 0.78, baselineCost: 45000 },
   bathroom: { label: "Bathroom Remodel", recoupRate: 0.71, baselineCost: 25000 },
@@ -93,7 +95,8 @@ export function calculateProjectROI(type: ProjectType, costOverride?: number): P
   const base = NATIONAL_ROI_BY_PROJECT[type];
   const costEstimate = costOverride ?? base.baselineCost;
   const valueAdded = Math.round(costEstimate * base.recoupRate);
-  const roiPercent = Math.round((valueAdded / costEstimate) * 100);
+  // A zero or negative cost would divide by zero and render "NaN%".
+  const roiPercent = costEstimate > 0 ? Math.round((valueAdded / costEstimate) * 100) : 0;
   return { type, label: base.label, costEstimate, valueAdded, roiPercent };
 }
 
@@ -144,18 +147,16 @@ export interface ScenarioOutput {
   projectedMonthlyNet: number;
 }
 
-const BASE_INTEREST_RATE = 6.5;
-const BASE_MONTHLY_RENT = 2400;
-const BASE_MONTHLY_COST = 2150;
-
-export function calculateScenarioOutcome(inputs: ScenarioInputs): ScenarioOutput {
-  const effectiveRate = BASE_INTEREST_RATE + inputs.interestRateDeltaPercent;
-  const occupancyFactor = inputs.occupancyRatePercent / 100;
-  const marketFactor = 1 + inputs.marketAdjustmentPercent / 100;
-
-  const adjustedRent = BASE_MONTHLY_RENT * occupancyFactor * marketFactor;
-  const rateAdjustedCost = BASE_MONTHLY_COST * (1 + (inputs.interestRateDeltaPercent / BASE_INTEREST_RATE) * 0.35);
-  const projectedMonthlyNet = Math.round(adjustedRent - rateAdjustedCost);
+/**
+ * Stress-tests the user's own property: the mortgage is re-priced at the
+ * shifted rate with the real amortization formula, and rent is scaled by
+ * occupancy and the market adjustment.
+ */
+export function calculateScenarioOutcome(inputs: ScenarioInputs, base: FinancingInputs): ScenarioOutput {
+  const effectiveRate = Math.max(0, base.interestRatePercent + inputs.interestRateDeltaPercent);
+  const monthlyCost = calculateFinancing({ ...base, interestRatePercent: effectiveRate }).totalMonthlyCost;
+  const adjustedRent = base.monthlyRentalEstimate * (inputs.occupancyRatePercent / 100) * (1 + inputs.marketAdjustmentPercent / 100);
+  const projectedMonthlyNet = Math.round(adjustedRent - monthlyCost);
 
   const holdingPenalty = Math.min(20, inputs.holdingPeriodYears * 1.5);
   const volatilityPenalty = Math.abs(inputs.marketAdjustmentPercent) * 1.2;
@@ -164,10 +165,7 @@ export function calculateScenarioOutcome(inputs: ScenarioInputs): ScenarioOutput
   let verdict: VerdictOutcome;
   let verdictLabel: string;
 
-  if (effectiveRate >= 7.5 && projectedMonthlyNet < 0) {
-    verdict = "sell_now";
-    verdictLabel = "Sell now";
-  } else if (projectedMonthlyNet > 200 && inputs.occupancyRatePercent >= 90) {
+  if (projectedMonthlyNet > 200 && inputs.occupancyRatePercent >= 90) {
     verdict = "rent_out";
     verdictLabel = "Rent it out";
   } else if (inputs.marketAdjustmentPercent <= -6) {
@@ -234,13 +232,14 @@ export function calculateDynamicRenovationROI(
 ): MaterialLaborBreakdown {
   const base = NATIONAL_ROI_BY_PROJECT[type];
   const blendedTrend = (materialTrendPercent * (materialCostPercent / 100)) + (laborTrendPercent * (1 - materialCostPercent / 100));
-  // Every 1% rise in blended costs erodes recoup rate by 0.6 percentage
-  // points (rebuilding the same project costs more without the resale
-  // value moving proportionally) -- a deliberately conservative, clearly
-  // stated sensitivity rather than a hidden black-box multiplier.
-  const adjustedRecoupRate = Math.max(0.2, base.recoupRate - (blendedTrend * 0.006));
+  // The resale bump a finished project earns doesn't change because
+  // materials or labor got pricier this quarter, so value added stays at
+  // the national baseline and only the cost moves. The recoup rate is then
+  // just value added / current cost: rising costs erode it, falling costs
+  // improve it.
   const costEstimate = Math.round(base.baselineCost * (1 + blendedTrend / 100));
-  const adjustedValueAdded = Math.round(costEstimate * adjustedRecoupRate);
+  const adjustedValueAdded = Math.round(base.baselineCost * base.recoupRate);
+  const adjustedRecoupRate = costEstimate > 0 ? adjustedValueAdded / costEstimate : 0;
 
   return {
     type,
@@ -306,7 +305,12 @@ export function calculateSellVsRent(inputs: CapitalDecisionInputs): CapitalDecis
 
   const annualNetRental = (inputs.monthlyRent - inputs.monthlyOwnCost) * 12;
   const appreciationFactor = Math.pow(1 + inputs.annualAppreciationPercent / 100, inputs.holdingYears);
-  const rentPathValue = annualNetRental * inputs.holdingYears + inputs.homeValue * appreciationFactor;
+  const futureValue = inputs.homeValue * appreciationFactor;
+  // The rental path still sells eventually, so it pays selling costs too --
+  // just on the appreciated value at the end of the holding period.
+  // Leaving them out would bias every comparison toward renting it out.
+  const futureSellingCosts = futureValue * (inputs.sellingCostPercent / 100);
+  const rentPathValue = annualNetRental * inputs.holdingYears + futureValue - futureSellingCosts;
 
   const netAdvantage = Math.round(rentPathValue - sellPathValue);
   const recommendedAction = netAdvantage > 0 ? "Rent it out" : "Sell now";
@@ -360,5 +364,72 @@ export function calculateMicroMarketSensitivity(
     currentRate,
     rateChange30dPercent,
     projectedLocalPriceImpactPercent,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Shared property assumptions
+// ---------------------------------------------------------------------------
+
+/**
+ * One set of numbers describing the user's property. Every dashboard tab
+ * reads from it, so a change on one tab flows through to all the others
+ * instead of each calculator keeping its own disconnected copy.
+ */
+export interface PropertyAssumptions {
+  homeValue: number;
+  livingAreaSqft: number;
+  monthlyRent: number;
+  interestRatePercent: number;
+  loanTermYears: number;
+  downPaymentPercent: number;
+  annualHoa: number;
+  annualInsurance: number;
+  annualMaintenancePercent: number;
+  annualPropertyTaxPercent: number;
+  annualAppreciationPercent: number;
+  holdingYears: number;
+  sellingCostPercent: number;
+}
+
+export const DEFAULT_ASSUMPTIONS: PropertyAssumptions = {
+  homeValue: 425000,
+  livingAreaSqft: 1900,
+  monthlyRent: 2400,
+  interestRatePercent: 6.5,
+  loanTermYears: 30,
+  downPaymentPercent: 20,
+  annualHoa: 0,
+  annualInsurance: 1800,
+  annualMaintenancePercent: 1,
+  annualPropertyTaxPercent: 1.1,
+  annualAppreciationPercent: 4.2,
+  holdingYears: 7,
+  sellingCostPercent: 7,
+};
+
+export function toFinancingInputs(a: PropertyAssumptions): FinancingInputs {
+  return {
+    purchasePrice: a.homeValue,
+    interestRatePercent: a.interestRatePercent,
+    loanTermYears: a.loanTermYears,
+    downPaymentPercent: a.downPaymentPercent,
+    annualHoa: a.annualHoa,
+    annualInsurance: a.annualInsurance,
+    annualMaintenancePercent: a.annualMaintenancePercent,
+    annualPropertyTaxPercent: a.annualPropertyTaxPercent,
+    monthlyRentalEstimate: a.monthlyRent,
+  };
+}
+
+/** Monthly cost of owning comes straight from the financing calculator. */
+export function toCapitalInputs(a: PropertyAssumptions): CapitalDecisionInputs {
+  return {
+    homeValue: a.homeValue,
+    monthlyRent: a.monthlyRent,
+    monthlyOwnCost: calculateFinancing(toFinancingInputs(a)).totalMonthlyCost,
+    annualAppreciationPercent: a.annualAppreciationPercent,
+    holdingYears: a.holdingYears,
+    sellingCostPercent: a.sellingCostPercent,
   };
 }

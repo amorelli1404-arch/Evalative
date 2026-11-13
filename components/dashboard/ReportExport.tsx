@@ -2,56 +2,44 @@
 
 import { useState } from "react";
 import { COLORS, FONT_FAMILY } from "../../lib/design-tokens";
+import { Eyebrow, Panel, SectionTitle } from "./ui";
+import type { PanelProps } from "./PremiumDashboard";
 
-export default function ReportExport() {
-  const [zillowUrl, setZillowUrl] = useState("");
+export default function ReportExport({ onExport }: PanelProps) {
+  const [listingUrl, setListingUrl] = useState("");
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
-
-  const handlePrint = () => window.print();
 
   return (
     <div className="flex flex-col gap-8">
-      <style jsx global>{`
-        @media print {
-          header, nav, footer, .no-print { display: none !important; }
-          body { background: white !important; }
-        }
-      `}</style>
-
       <div>
-        <h3 className="text-lg mb-3" style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: COLORS.ink }}>
-          Export formal report
-        </h3>
+        <SectionTitle className="mb-3">Export formal report</SectionTitle>
         <p className="text-sm mb-4" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
-          Formats your verdict, financial modeling, and comps into a clean layout for co-buyers, partners, or lenders.
+          Prints the Overview — every verdict plus the numbers behind them — in a clean layout for co-buyers,
+          partners, or lenders.
         </p>
         <button
-          onClick={handlePrint}
+          onClick={onExport}
           className="px-6 py-3 rounded-sm text-sm font-medium"
           style={{ fontFamily: FONT_FAMILY.body, backgroundColor: COLORS.ink, color: "#FFFFFF" }}
         >
           Export Formal Evaluation Report
         </button>
         <p className="text-xs mt-2" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
-          Opens your browser's print dialog — choose "Save as PDF" as the destination.
+          Opens your browser&apos;s print dialog — choose &quot;Save as PDF&quot; as the destination.
         </p>
       </div>
 
       <div>
-        <h3 className="text-lg mb-3" style={{ fontFamily: FONT_FAMILY.display, fontWeight: 600, color: COLORS.ink }}>
-          Data integrations
-        </h3>
+        <SectionTitle className="mb-3">Data integrations</SectionTitle>
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="rounded-sm border p-4" style={{ borderColor: COLORS.hairline }}>
-            <label className="block text-xs uppercase tracking-wide mb-2" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
-              Import from Zillow / Redfin URL
-            </label>
+          <Panel padding="p-4">
+            <Eyebrow>Import from Zillow / Redfin URL</Eyebrow>
             <div className="flex gap-2">
               <input
-                value={zillowUrl}
-                onChange={(e) => setZillowUrl(e.target.value)}
+                value={listingUrl}
+                onChange={(e) => setListingUrl(e.target.value)}
                 placeholder="https://www.zillow.com/homedetails/..."
-                className="flex-1 px-3 py-2 text-sm rounded-sm border"
+                className="flex-1 min-w-0 px-3 py-2 text-sm rounded-sm border"
                 style={{ borderColor: COLORS.hairline, fontFamily: FONT_FAMILY.body }}
               />
               <button
@@ -63,12 +51,13 @@ export default function ReportExport() {
                 Import
               </button>
             </div>
-          </div>
+            <p className="text-xs mt-2" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
+              Coming soon. For now, enter the listing&apos;s numbers on the Overview tab.
+            </p>
+          </Panel>
 
-          <div className="rounded-sm border p-4" style={{ borderColor: COLORS.hairline }}>
-            <label className="block text-xs uppercase tracking-wide mb-2" style={{ fontFamily: FONT_FAMILY.body, color: COLORS.inkMuted }}>
-              Upload property documents
-            </label>
+          <Panel padding="p-4">
+            <Eyebrow>Upload property documents</Eyebrow>
             <input
               type="file"
               onChange={(e) => setUploadedFileName(e.target.files?.[0]?.name ?? null)}
@@ -80,7 +69,7 @@ export default function ReportExport() {
                 Selected: {uploadedFileName} (not yet processed — storage/parsing backend not connected)
               </p>
             )}
-          </div>
+          </Panel>
         </div>
       </div>
     </div>

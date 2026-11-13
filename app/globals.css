@@ -23,6 +23,19 @@ body {
   }
 }
 
+/* Dashboard report export: print only the content, not site chrome or controls. */
+@media print {
+  header,
+  nav,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+  }
+}
+
 button:focus-visible,
 input:focus-visible,
 a:focus-visible {
